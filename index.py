@@ -39,7 +39,11 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-            # mouse down
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_e:
+                    player.toggle_inventory()
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     mouse_x, mouse_y = pygame.mouse.get_pos()

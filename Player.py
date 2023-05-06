@@ -1,5 +1,7 @@
 import pygame
 
+from Inventory import Inventory
+
 
 class Player:
     def __init__(self, grid, screen, FPS, x, y, size, speed):
@@ -10,6 +12,8 @@ class Player:
         self.y = y
         self.size = size
         self.speed = speed
+        self.inventory = Inventory(screen, self)
+        self.isInventoryOpen = False
 
     def draw(self):
         draw_x = self.screen.get_width() // 2 - self.size // 2
@@ -34,7 +38,13 @@ class Player:
         pygame.draw.rect(self.screen, (255, 0, 0),
                          (draw_x, draw_y, self.size, self.size))
 
+        if (self.isInventoryOpen):
+            self.inventory.draw()
+
     def move(self, x, y):
+        if (self.isInventoryOpen):
+            return
+
         x = min(max(x, -1), 1)
         y = min(max(y, -1), 1)
         self.x += x * self.speed * (1 / self.FPS)
@@ -44,6 +54,9 @@ class Player:
                      * self.grid.get_tile_size())
         self.y = min(max(self.y, 0), self.grid.get_height()
                      * self.grid.get_tile_size())
+
+    def toggle_inventory(self):
+        self.isInventoryOpen = not self.isInventoryOpen
 
     def get_x(self):
         return self.x
