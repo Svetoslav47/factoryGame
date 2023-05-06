@@ -12,49 +12,78 @@ class Grid:
         self.grid = [[0 for x in range(self.width)]
                      for y in range(self.height)]
 
-    def draw(self, player_x_world_position, player_y_world_position):
+    def draw(self, player):
+        player_x = player.get_x()
+        player_y = player.get_y()
 
-        start_tile_x = player_x_world_position // self.tile_size - \
-            self.screen.get_width() // self.tile_size // 2
+        if player_x < self.screen.get_width() // 2:
+            player_x = self.screen.get_width() // 2
 
-        start_tile_y = player_y_world_position // self.tile_size - \
-            self.screen.get_height() // self.tile_size // 2
+        if player_x > self.width * self.tile_size - self.screen.get_width() // 2:
+            player_x = self.width * self.tile_size - self.screen.get_width() // 2
 
-        tile_x_offset = player_x_world_position % self.tile_size
-        tile_y_offset = player_y_world_position % self.tile_size
+        if player_y < self.screen.get_height() // 2:
+            player_y = self.screen.get_height() // 2
 
-        if self.width - start_tile_x < self.screen.get_width() // self.tile_size:
-            start_tile_x = self.width - self.screen.get_width() // self.tile_size
-            tile_x_offset = 0
+        if player_y > self.height * self.tile_size - self.screen.get_height() // 2:
+            player_y = self.height * self.tile_size - self.screen.get_height() // 2
 
-        if start_tile_x < 0:
-            start_tile_x = 0
-            tile_x_offset = 0
+        square_offset_x = player_x % self.tile_size
+        square_offset_y = player_y % self.tile_size
 
-        if self.height - start_tile_y < self.screen.get_height() // self.tile_size:
-            start_tile_y = self.height - self.screen.get_height() // self.tile_size
-            tile_y_offset = 0
+        start_square_x_index = player_x // self.tile_size - \
+            self.screen.get_width() // 2 // self.tile_size
+        start_square_y_index = player_y // self.tile_size - \
+            self.screen.get_height() // 2 // self.tile_size
 
-        start_tile_x = min(max(start_tile_x, 0), self.width - 1)
-        start_tile_y = min(max(start_tile_y, 0), self.height - 1)
+        num_squares_x = self.screen.get_width() // self.tile_size + 2
+        num_squares_y = self.screen.get_height() // self.tile_size + 2
 
-        num_tiles_x = math.ceil(self.screen.get_width() +
-                                player_x_world_position) // self.tile_size
-        num_tiles_y = math.ceil(self.screen.get_height() +
-                                player_x_world_position) // self.tile_size
+        for x in range(num_squares_x):
+            for y in range(num_squares_y):
+                square_x = x * self.tile_size - square_offset_x
+                square_y = y * self.tile_size - square_offset_y
 
-        for x in range(num_tiles_x):
-            for y in range(num_tiles_y):
-                tile_x = start_tile_x + x
-                tile_y = start_tile_y + y
+                square_x_index = int(x + start_square_x_index)
+                square_y_index = int(y + start_square_y_index)
 
-                if tile_x < 0 or tile_x >= self.width or tile_y < 0 or tile_y >= self.height:
+                if square_x_index < 0 or square_x_index >= self.width:
                     continue
 
+                if square_y_index < 0 or square_y_index >= self.height:
+                    continue
+
+                if self.grid[square_x_index][square_y_index] == 1:
+                    pygame.draw.rect(self.screen, (255, 255, 255),
+                                     (square_x, square_y, self.tile_size, self.tile_size))
+
                 pygame.draw.rect(self.screen, (255, 255, 255),
-                                 (x * self.tile_size - tile_x_offset,
-                                  y * self.tile_size - tile_y_offset,
-                                  self.tile_size, self.tile_size), 1)
+                                 (square_x, square_y, self.tile_size, self.tile_size), 1)
+
+    def screen_to_world(self, mouse_x, mouse_y, player):
+        x_in_world = mouse_x + player.get_x() - self.screen.get_width() // 2
+        y_in_world = mouse_y + player.get_y() - self.screen.get_height() // 2
+
+        if player.x < self.screen.get_width() / 2:
+            x_in_world = mouse_x
+
+        if player.x > self.width * self.tile_size - self.screen.get_width() / 2:
+            x_in_world = mouse_x + self.width * self.tile_size - self.screen.get_width()
+
+        if player.y < self.screen.get_height() / 2:
+            y_in_world = mouse_y
+
+        if player.y > self.height * self.tile_size - self.screen.get_height() / 2:
+            y_in_world = mouse_y + self.height * self.tile_size - self.screen.get_height()
+
+        return (int(x_in_world),
+                int(y_in_world))
+
+    def world_to_grid(self, x, y):
+        return (int(x // self.tile_size), int(y // self.tile_size))
+
+    def screen_to_grid(self, x, y, player):
+        return self.world_to_grid(*self.screen_to_world(x, y, player))
 
     def get_tile(self, x, y):
         return self.grid[x][y]

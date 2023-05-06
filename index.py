@@ -11,7 +11,7 @@ FPS = 100
 def draw(screen, grid, player):
     screen.fill((0, 0, 0))
 
-    grid.draw(player.x, player.y)
+    grid.draw(player)
     player.draw()
 
     pygame.display.update()
@@ -23,7 +23,7 @@ def main():
     pygame.display.set_caption("Factory Game")
     screen = pygame.display.set_mode((800, 600))
 
-    grid = Grid(screen, tile_size=50, width=50, height=50)
+    grid = Grid(screen, tile_size=50, width=20, height=20)
 
     player = Player(grid,
                     screen,
@@ -39,6 +39,13 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+            # mouse down
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    mouse_x, mouse_y = pygame.mouse.get_pos()
+                    x, y = grid.screen_to_grid(mouse_x, mouse_y, player)
+                    print(x, y)
+                    grid.set_tile(x, y, 1)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
@@ -49,11 +56,6 @@ def main():
             player.move(-1, 0)
         if keys[pygame.K_d]:
             player.move(1, 0)
-
-        # player_x_world_postion = min(
-        #     max(player_x_world_postion, 0), grid.get_width() * grid.get_tile_size())
-        # player_y_world_postion = min(
-        #     max(player_y_world_postion, 0), grid.get_height() * grid.get_tile_size())
 
         draw(screen, grid, player)
 

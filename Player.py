@@ -15,8 +15,6 @@ class Player:
         draw_x = self.screen.get_width() // 2 - self.size // 2
         draw_y = self.screen.get_height() // 2 - self.size // 2
 
-        print(self.x, self.y)
-
         if (self.x < self.screen.get_width() // 2):
             draw_x = self.x - self.size // 2
 
