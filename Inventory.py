@@ -7,7 +7,7 @@ class Inventory:
         self.screen = screen
         self.player = player
         self.inventory_size = inventory_size
-        self.inventory = [0 for x in range(self.inventory_size)]
+        self.inventory = [None for x in range(self.inventory_size)]
         self.screen_size_x = screen.get_width() * 3 / 4
         self.screen_size_y = screen.get_height() * 3 / 4
         self.columns = 5
@@ -35,10 +35,26 @@ class Inventory:
                 pygame.draw.rect(self.screen, (255, 255, 255),
                                  (box_x, box_y, self.box_size, self.box_size))
 
-                # draw box number
-                font = pygame.font.SysFont('Arial', 20)
-                text = font.render(str(y*self.columns + x), True, (0, 0, 0))
-                textRect = text.get_rect()
-                textRect.center = (box_x + self.box_size //
-                                   2, box_y + self.box_size // 2)
-                self.screen.blit(text, textRect)
+                if self.inventory[y*self.columns + x] != None:
+                    self.inventory[y*self.columns + x].drawInInventory(
+                        box_x, box_y, self.box_size)
+
+    def add_item(self, item):
+        for x in range(self.inventory_size):
+            if self.inventory[x] != None and self.inventory[x].item_id == item.item_id:
+                if self.inventory[x].stack_size - self.inventory[x].amount > 0:
+                    if self.inventory[x].stack_size - self.inventory[x].amount >= item.amount:
+                        self.inventory[x].amount += item.amount
+                        return True
+                    else:
+                        item.amount -= self.inventory[x].stack_size - \
+                            self.inventory[x].amount
+                        self.inventory[x].amount = self.inventory[x].stack_size
+                        return self.add_item(item)
+
+        for x in range(self.inventory_size):
+            if self.inventory[x] == None:
+                self.inventory[x] = item
+                return True
+
+        return False

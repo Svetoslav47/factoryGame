@@ -58,6 +58,9 @@ class Player:
     def toggle_inventory(self):
         self.isInventoryOpen = not self.isInventoryOpen
 
+    def add_item_to_inventory(self, item):
+        self.inventory.add_item(item)
+
     def get_x(self):
         return self.x
 
