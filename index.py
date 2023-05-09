@@ -1,5 +1,4 @@
-from items.IronIngot import IronIngot
-from items.CopperIngot import CopperIngot
+from Items import CopperIngot, IronIngot, CopperPlate
 import pygame
 
 from sys import exit
@@ -25,7 +24,7 @@ def main():
     pygame.display.set_caption("Factory Game")
     screen = pygame.display.set_mode((800, 600))
 
-    grid = Grid(screen, tile_size=50, width=200, height=200)
+    grid = Grid(screen, tile_size=50, width=20, height=20)
 
     player = Player(grid,
                     screen,
@@ -51,6 +50,9 @@ def main():
                 if event.key == pygame.K_2:
                     player.inventory.add_item(
                         CopperIngot(screen, 10))
+                if event.key == pygame.K_3:
+                    player.inventory.add_item(
+                        CopperPlate(screen, 10))
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:

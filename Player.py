@@ -1,6 +1,6 @@
 import pygame
 
-from Inventory import Inventory
+from PlayerInventory import PlayerInventory
 
 
 class Player:
@@ -12,7 +12,7 @@ class Player:
         self.y = y
         self.size = size
         self.speed = speed
-        self.inventory = Inventory(screen, self)
+        self.inventory = PlayerInventory(screen, self)
         self.isInventoryOpen = False
 
     def draw(self):
