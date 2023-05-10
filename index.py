@@ -54,22 +54,19 @@ def main():
                     player.inventory.add_item(
                         CopperPlate(screen, 10))
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    mouse_x, mouse_y = pygame.mouse.get_pos()
-                    x, y = grid.screen_to_grid(mouse_x, mouse_y, player)
-                    print(x, y)
-                    grid.set_tile(x, y, 1)
+            # if event.type == pygame.MOUSEBUTTONDOWN:
+            #     if event.button == 1:
+            #         mouse_x, mouse_y = pygame.mouse.get_pos()
+            #         x, y = grid.screen_to_grid(mouse_x, mouse_y, player)
+            #         print(x, y)
+            #         grid.set_tile(x, y, 1)
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
-            player.move(0, -1)
-        if keys[pygame.K_s]:
-            player.move(0, 1)
-        if keys[pygame.K_a]:
-            player.move(-1, 0)
-        if keys[pygame.K_d]:
-            player.move(1, 0)
+
+        mouse_buttons = pygame.mouse.get_pressed()
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        player.update(keys, mouse_buttons, mouse_x, mouse_y)
 
         draw(screen, grid, player)
 

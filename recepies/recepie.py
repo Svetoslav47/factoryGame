@@ -1,5 +1,5 @@
 class Recepie:
-    def __init__(self, time_to_craft):
+    def __init__(self, time_to_craft, screen):
         ingredients = []  # list of tuples (item, amount)
         self.result = None  # tuple (item, amount)
         self.time_to_craft = time_to_craft
