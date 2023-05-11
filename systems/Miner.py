@@ -4,39 +4,40 @@ from tiles.Tile import Tile
 
 
 class Miner:
-    def __init__(self, grid, miningSpeed, inventory, FPS):
-        self.FPS = FPS
-        self.grid = grid
-        self.miningTile = None
-        self.miningProgress = 0
-        self.miningSpeed = 1
-        self.miningHardness = 0
-        self.inventory = inventory
-        self.is_mining = False
+    def __init__(self, grid, miningSpeed, inventory, clock):
+        self.__clock = clock
+        self.__grid = grid
+        self.__mining_tile = None
+        self.__mining_progress = 0
+        self.__mining_speed = 1
+        self.__mining_hardness = 0
+        self.__inventory = inventory
+        self.__is_mining = False
 
     def update(self, tile_x, tile_y):
-        if isinstance(self.grid.get_tile(tile_x, tile_y), Tile) == False:
+        if self.__grid.is_tile_minable(tile_x, tile_y) == False:
             return
 
-        if self.miningTile != (tile_x, tile_y):
-            self.miningTile = (tile_x, tile_y)
-            self.miningProgress = 0
-            self.miningHardness = self.grid.get_tile(
+        if self.__mining_tile != (tile_x, tile_y):
+            self.__mining_tile = (tile_x, tile_y)
+            self.__mining_progress = 0
+            self.__mining_hardness = self.__grid.get_tile(
                 tile_x, tile_y).get_hardness()
 
-        if self.miningProgress >= self.miningHardness:
-            self.grid.get_tile(*self.miningTile).mine(self.inventory)
-            self.miningProgress = 0
-            self.miningTile = None
-            self.miningHardness = 0
+        if self.__mining_progress >= self.__mining_hardness:
+            self.__grid.get_tile(*self.__mining_tile).mine(self.__inventory)
+            self.__mining_progress = 0
+            self.__mining_tile = None
+            self.__mining_hardness = 0
             return
 
-        self.miningProgress += self.miningSpeed * (1 / self.FPS)
+        self.__mining_progress += self.__mining_speed * \
+            (1 / self.__clock.get_fps())
 
     def get_progress(self):
-        if self.miningTile == None:
+        if self.__mining_tile == None:
             return 0
-        return self.miningProgress / self.miningHardness
+        return self.__mining_progress / self.__mining_hardness
 
     def get_mining_tile(self):
-        return self.miningTile
+        return self.__mining_tile

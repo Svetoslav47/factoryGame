@@ -32,9 +32,9 @@ class Grid:
         for i in range(size):
             for j in range(size):
                 self.__grid[x + i][y + j] = ores[ore_type](
-                    self.__screen, self.__tile_size)
+                    self.__screen, self.__tile_size, self)
 
-    def draw(self, player):
+    def draw(self, player, mouse_x_grid, mouse_y_grid):
         player_x = player.get_x()
         player_y = player.get_y()
 
@@ -75,25 +75,28 @@ class Grid:
                 pygame.draw.rect(self.__screen, (200, 200, 200), (square_x, square_y,
                                                                   self.__tile_size, self.__tile_size))
 
-                if isinstance(self.__grid[square_x_index][square_y_index], Tile):
+                if self.is_tile_minable(square_x_index, square_y_index):
                     self.__grid[square_x_index][square_y_index].draw(
                         square_x, square_y)
+                    if square_x_index == mouse_x_grid and square_y_index == mouse_y_grid:
+                        pygame.draw.rect(self.__screen, (0, 0, 0), (square_x, square_y,
+                                                                    self.__tile_size, self.__tile_size), 2)
 
     def screen_to_world(self, mouse_x, mouse_y, player):
         x_in_world = mouse_x + player.get_x() - self.__screen.get_width() // 2
         y_in_world = mouse_y + player.get_y() - self.__screen.get_height() // 2
 
-        if player.x < self.__screen.get_width() / 2:
+        if player.get_x() < self.__screen.get_width() / 2:
             x_in_world = mouse_x
 
-        if player.x > self.__width * self.__tile_size - self.__screen.get_width() / 2:
+        if player.get_x() > self.__width * self.__tile_size - self.__screen.get_width() / 2:
             x_in_world = mouse_x + self.__width * \
                 self.__tile_size - self.__screen.get_width()
 
-        if player.y < self.__screen.get_height() / 2:
+        if player.get_y() < self.__screen.get_height() / 2:
             y_in_world = mouse_y
 
-        if player.y > self.__height * self.__tile_size - self.__screen.get_height() / 2:
+        if player.get_y() > self.__height * self.__tile_size - self.__screen.get_height() / 2:
             y_in_world = mouse_y + self.__height * \
                 self.__tile_size - self.__screen.get_height()
 
@@ -108,6 +111,16 @@ class Grid:
 
     def get_tile(self, x, y):
         return self.__grid[x][y]
+
+    def get_tile_coordinates(self, tile):
+        for x in range(self.__width):
+            for y in range(self.__height):
+                if self.__grid[x][y] == tile:
+                    return (x, y)
+        return None
+
+    def is_tile_minable(self, x, y):
+        return isinstance(self.__grid[x][y], Tile)
 
     def set_tile(self, x, y, value):
         self.__grid[x][y] = value
