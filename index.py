@@ -6,7 +6,7 @@ from sys import exit
 from Grid import Grid
 from Player import Player
 
-FPS = 100
+FPS = 50
 
 
 def draw(screen, grid, player):
@@ -53,13 +53,6 @@ def main():
                 if event.key == pygame.K_3:
                     player.inventory.add_item(
                         CopperPlate(screen, 10))
-
-            # if event.type == pygame.MOUSEBUTTONDOWN:
-            #     if event.button == 1:
-            #         mouse_x, mouse_y = pygame.mouse.get_pos()
-            #         x, y = grid.screen_to_grid(mouse_x, mouse_y, player)
-            #         print(x, y)
-            #         grid.set_tile(x, y, 1)
 
         keys = pygame.key.get_pressed()
 
