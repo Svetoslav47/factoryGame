@@ -1,4 +1,3 @@
-from Items import CopperIngot, IronIngot, CopperPlate
 import pygame
 
 from sys import exit
@@ -48,15 +47,6 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e:
                     player.toggle_inventory()
-                if event.key == pygame.K_1:
-                    player.inventory.add_item(
-                        IronIngot(screen, 10))
-                if event.key == pygame.K_2:
-                    player.inventory.add_item(
-                        CopperIngot(screen, 10))
-                if event.key == pygame.K_3:
-                    player.inventory.add_item(
-                        CopperPlate(screen, 10))
 
         keys = pygame.key.get_pressed()
 

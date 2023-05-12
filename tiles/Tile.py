@@ -2,17 +2,17 @@ import pygame
 
 
 class Tile:
-    def __init__(self, screen, tile_size, image, grid, hardness=1, richness=None, item=None):
+    def __init__(self, screen, tile_size, grid, hardness=1, richness=None, item=None):
         self.__screen = screen
         self.__tile_size = tile_size
-        self.__image = pygame.transform.scale(image, (tile_size, tile_size))
         self.__hardness = hardness
         self.__richness = richness
         self.__item = item
         self.__grid = grid
 
-    def draw(self, x, y):
-        self.__screen.blit(self.__image, (x, y))
+    def draw(self, x, y, image):
+        self.__screen.blit(pygame.transform.scale(
+            image, (self.__tile_size, self.__tile_size)), (x, y))
 
     def mine(self, inventory):
         if self.__item != None:

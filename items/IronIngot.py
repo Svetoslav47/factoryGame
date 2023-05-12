@@ -4,6 +4,10 @@ STACK = 64
 
 
 class IronIngot(Item):
+    image = pygame.image.load("assets/items/IronIngot.png")
+
     def __init__(self, screen, item_count):
-        image = pygame.image.load("assets/items/IronIngot.png")
-        super().__init__(screen, "iron_ingot", item_count, image, STACK)
+        super().__init__(screen, "iron_ingot", item_count, STACK)
+
+    def drawInInventory(self, draw_x, draw_y, box_size):
+        super().drawInInventory(draw_x, draw_y, box_size, IronIngot.image)
