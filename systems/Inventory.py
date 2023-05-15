@@ -12,7 +12,7 @@ class Inventory:
         amount = 0
         for x in range(self._inventory_size):
             if self._inventory[x] != None and self._inventory[x].get_item_id() == item_id:
-                amount += self._inventory[x].amount
+                amount += self._inventory[x].get_amount()
         return amount
 
     def add_item(self, item):

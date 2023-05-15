@@ -1,9 +1,12 @@
 import pygame
 
-from PlayerInventory import PlayerInventory
+from systems.PlayerInventory import PlayerInventory
 from systems.Miner import Miner
+from systems.PlayerHotbar import PlayerHotbar
 
 from tiles.Tile import Tile
+
+from Items import IronOre
 
 
 class Player:
@@ -18,6 +21,8 @@ class Player:
         self.__inventory = PlayerInventory(screen, self)
         self.__is_inventory_open = False
         self.__miner = Miner(grid, 1, self.__inventory, clock)
+        self.__hotbar = PlayerHotbar(screen, self, self.__inventory)
+        self.__hotbar.set_slot(0, IronOre(screen=self.__screen))
 
     def draw(self, mouse_buttons, mouse_x_grid, mouse_y_grid):
         draw_x = self.__screen.get_width() // 2 - self.__size // 2
@@ -48,9 +53,11 @@ class Player:
         if mouse_buttons[2] and self.__grid.is_tile_minable(mouse_x_grid, mouse_y_grid) and self.__miner.get_mining_tile() != None:
             # draw mining progress bar at the center of the bottom of the screen
             pygame.draw.rect(self.__screen, (0, 0, 0), (self.__screen.get_width(
-            ) // 2 - 50, self.__screen.get_height() - 50, 100, 10))
+            ) // 2 - 50, self.__screen.get_height() - 75, 100, 10))
             pygame.draw.rect(self.__screen, (255, 255, 255), (self.__screen.get_width(
-            ) // 2 - 50, self.__screen.get_height() - 50, 100 * self.__miner.get_progress(), 10))
+            ) // 2 - 50, self.__screen.get_height() - 75, 100 * self.__miner.get_progress(), 10))
+
+        self.__hotbar.draw(mouse_x_grid, mouse_y_grid)
 
     def update(self, keys, mouse_buttons, mouse_x_grid, mouse_y_grid):
         if keys[pygame.K_w]:
@@ -88,6 +95,9 @@ class Player:
 
     def add_item_to_inventory(self, item):
         self.__inventory.add_item(item)
+
+    def get_inventory(self):
+        return self.__inventory
 
     def get_x(self):
         return self.__x
