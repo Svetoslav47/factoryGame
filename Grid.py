@@ -49,7 +49,10 @@ class Grid:
 
         return player_x, player_y
 
-    def draw(self, player, mouse_x_grid, mouse_y_grid):
+    def draw(self, player, mouse_x, mouse_y):
+        mouse_x_grid, mouse_y_grid = self.screen_to_grid(
+            mouse_x, mouse_y, player)
+
         player_x = player.get_x()
         player_y = player.get_y()
 

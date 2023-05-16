@@ -26,9 +26,12 @@ class Player:
         self.__hotbar = PlayerHotbar(screen, self, self.__inventory)
         self.__hotbar.set_slot(0, IronOre(screen=self.__screen))  # temp
 
-    def draw(self, mouse_buttons, mouse_x_grid, mouse_y_grid):
+    def draw(self, mouse_buttons, mouse_x, mouse_y):
         draw_x = self.__screen.get_width() // 2 - self.__size // 2
         draw_y = self.__screen.get_height() // 2 - self.__size // 2
+
+        mouse_x_grid, mouse_y_grid = self.__grid.screen_to_grid(
+            mouse_x, mouse_y, self)
 
         if self.__x < self.__screen.get_width() // 2:
             draw_x = self.__x - self.__size // 2
@@ -61,6 +64,8 @@ class Player:
 
         self.__hotbar.draw(mouse_x_grid, mouse_y_grid)
 
+        self.__player_hand.draw(mouse_x, mouse_y)
+
     def update(self, keys, mouse_buttons, mouse_x, mouse_y, events):
         mouse_x_grid, mouse_y_grid = self.__grid.screen_to_grid(
             mouse_x, mouse_y, self)
@@ -79,6 +84,9 @@ class Player:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 3:
                     right_mouse_button_down_event = True
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_e:
+                    self.toggle_inventory()
 
         if self.__is_inventory_open:
             self.is_mining = False

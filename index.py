@@ -45,22 +45,16 @@ def main():
                 pygame.quit()
                 exit()
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_e:
-                    player.toggle_inventory()
-
         keys = pygame.key.get_pressed()
 
         mouse_buttons = pygame.mouse.get_pressed()
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        mouse_x_grid, mouse_y_grid = grid.screen_to_grid(
-            mouse_x, mouse_y, player)
 
         update(player, keys, mouse_buttons,
                mouse_x, mouse_y, events)
 
         draw(screen, grid, player, mouse_buttons,
-             mouse_x_grid, mouse_y_grid)
+             mouse_x, mouse_y)
 
 
 if __name__ == "__main__":

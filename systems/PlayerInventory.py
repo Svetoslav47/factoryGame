@@ -41,12 +41,12 @@ class PlayerInventory(Inventory):
                                  (box_x, box_y, self.__box_size, self.__box_size))
 
                 # draw box index
-                text = pygame.font.SysFont("arial", 20).render(
-                    str(y*self.__columns + x), True, (0, 0, 0))
-                textRect = text.get_rect()
-                textRect.center = (box_x + self.__box_size //
-                                   2, box_y + self.__box_size // 2)
-                self._screen.blit(text, textRect)
+                # text = pygame.font.SysFont("arial", 20).render(
+                #     str(y*self.__columns + x), True, (0, 0, 0))
+                # textRect = text.get_rect()
+                # textRect.center = (box_x + self.__box_size //
+                #                    2, box_y + self.__box_size // 2)
+                # self._screen.blit(text, textRect)
 
                 if self._inventory[y*self.__columns + x] != None:
                     self._inventory[y*self.__columns + x].drawInInventory(
