@@ -17,8 +17,8 @@ def draw(screen, grid, player, mouse_buttons, mouse_x, mouse_y):
     pygame.display.update()
 
 
-def update(player, keys, mouse_buttons, mouse_x, mouse_y):
-    player.update(keys, mouse_buttons, mouse_x, mouse_y)
+def update(player, keys, mouse_buttons, mouse_x, mouse_y, events):
+    player.update(keys, mouse_buttons, mouse_x, mouse_y, events)
 
 
 def main():
@@ -39,7 +39,8 @@ def main():
 
     while True:
         clock.tick(FPS)
-        for event in pygame.event.get():
+        events = pygame.event.get()
+        for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
@@ -55,9 +56,11 @@ def main():
         mouse_x_grid, mouse_y_grid = grid.screen_to_grid(
             mouse_x, mouse_y, player)
 
-        update(player, keys, mouse_buttons, mouse_x_grid, mouse_y_grid)
+        update(player, keys, mouse_buttons,
+               mouse_x, mouse_y, events)
 
-        draw(screen, grid, player, mouse_buttons, mouse_x_grid, mouse_y_grid)
+        draw(screen, grid, player, mouse_buttons,
+             mouse_x_grid, mouse_y_grid)
 
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@ import pygame
 from systems.PlayerInventory import PlayerInventory
 from systems.Miner import Miner
 from systems.PlayerHotbar import PlayerHotbar
+from systems.PlayerHand import PlayerHand
 
 from tiles.Tile import Tile
 
@@ -21,8 +22,9 @@ class Player:
         self.__inventory = PlayerInventory(screen, self)
         self.__is_inventory_open = False
         self.__miner = Miner(grid, 1, self.__inventory, clock)
+        self.__player_hand = PlayerHand(screen)
         self.__hotbar = PlayerHotbar(screen, self, self.__inventory)
-        self.__hotbar.set_slot(0, IronOre(screen=self.__screen))
+        self.__hotbar.set_slot(0, IronOre(screen=self.__screen))  # temp
 
     def draw(self, mouse_buttons, mouse_x_grid, mouse_y_grid):
         draw_x = self.__screen.get_width() // 2 - self.__size // 2
@@ -59,7 +61,9 @@ class Player:
 
         self.__hotbar.draw(mouse_x_grid, mouse_y_grid)
 
-    def update(self, keys, mouse_buttons, mouse_x_grid, mouse_y_grid):
+    def update(self, keys, mouse_buttons, mouse_x, mouse_y, events):
+        mouse_x_grid, mouse_y_grid = self.__grid.screen_to_grid(
+            mouse_x, mouse_y, self)
         if keys[pygame.K_w]:
             self.move(0, -1)
         if keys[pygame.K_s]:
@@ -69,8 +73,21 @@ class Player:
         if keys[pygame.K_d]:
             self.move(1, 0)
 
+        right_mouse_button_down_event = False
+
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 3:
+                    right_mouse_button_down_event = True
+
         if self.__is_inventory_open:
             self.is_mining = False
+
+            if self.__inventory.is_mouse_in_inventory_screen(mouse_x, mouse_y):
+                if right_mouse_button_down_event:
+                    self.__player_hand.grab(
+                        self.__inventory, self.__inventory.get_box_index_from_screen(mouse_x, mouse_y))
+
             return
 
         if mouse_buttons[2] == 1:

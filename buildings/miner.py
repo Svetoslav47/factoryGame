@@ -1,15 +1,8 @@
 import pygame
+from buildings.Building import Building
 
 
-class Miner:
-    def __init__(self, screen, x, y, width, height):
-        self.screen = screen
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-
-        self.image = pygame.image.load("assets/machines/miner.png")
-
-    def mine(self):
-        pass
+class Miner(Building):
+    def __init__(self, screen, x_grid, y_grid, width, height):
+        super().__init__(screen, x_grid, y_grid, width, height, pygame.image.load(
+            "assets/building/miner.png"))
