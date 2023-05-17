@@ -1,7 +1,5 @@
 import pygame
 
-from buildings.Building import Building
-
 
 class Item:
     def __init__(self, screen, item_id, amount=1, stack_size=64):
@@ -39,7 +37,7 @@ class Item:
         self._screen.blit(text, textRect)
 
     def is_buildable(self):
-        return isinstance(self, Building)
+        return False
 
     def get_item_id(self):
         return self._item_id

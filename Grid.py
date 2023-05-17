@@ -19,8 +19,11 @@ class Grid:
         self.__width = width
         self.__height = height
         self.__tile_size = tile_size
-        self.__grid = [[0 for x in range(self.__width)]
-                       for y in range(self.__height)]
+        self.__tiles_grid = [[None for x in range(self.__width)]
+                             for y in range(self.__height)]
+        self.__buildings_grid = [[None for x in range(self.__width)]
+                                 for y in range(self.__height)]
+        self.__buildings = []
         self.__generate_ore(12345, "iron_ore", size=5)
         # self.__generate_ore(67890, "iron_ore", size=5)
 
@@ -31,8 +34,8 @@ class Grid:
 
         for i in range(size):
             for j in range(size):
-                self.__grid[x + i][y + j] = ores[ore_type](
-                    self.__screen, self.__tile_size, self)
+                self.__tiles_grid[x + i][y + j] = ores[ore_type](
+                    self.__screen, self)
 
     def player_edge_dampening(self, player_x, player_y):
         if player_x < self.__screen.get_width() // 2:
@@ -83,12 +86,40 @@ class Grid:
                 pygame.draw.rect(self.__screen, (200, 200, 200), (square_x, square_y,
                                                                   self.__tile_size, self.__tile_size))
 
+                if self.__tiles_grid[square_x_index][square_y_index] == None:
+                    continue
+
+                self.__tiles_grid[square_x_index][square_y_index].draw(
+                    self.__screen, square_x, square_y, self.__tile_size)
+
                 if self.is_tile_minable(square_x_index, square_y_index):
-                    self.__grid[square_x_index][square_y_index].draw(
-                        square_x, square_y)
                     if square_x_index == mouse_x_grid and square_y_index == mouse_y_grid:
                         pygame.draw.rect(self.__screen, (0, 0, 0), (square_x, square_y,
                                                                     self.__tile_size, self.__tile_size), 2)
+
+        for building in self.__buildings:
+            building.draw(player)
+
+    def build(self, x_grid, y_grid, building, width, height):
+        if not self.can_build(x_grid, y_grid, width, height):
+            return False
+
+        for i in range(width):
+            for j in range(height):
+                self.__buildings_grid[x_grid +
+                                      i][y_grid + j] = building.get_id()
+
+        self.__buildings.append(building)
+
+        return True
+
+    def can_build(self, x_grid, y_grid, width, height):
+        for i in range(width):
+            for j in range(height):
+                if not ((self.__tiles_grid[x_grid + i][y_grid + j] == None or self.__tiles_grid[x_grid + i][y_grid + j].is_solid())
+                        and self.__buildings_grid[x_grid + i][y_grid + j] == None):
+                    return False
+        return True
 
     def screen_to_grid(self, x, y, player):
         return self.world_to_grid(*self.screen_to_world(x, y, player))
@@ -119,20 +150,20 @@ class Grid:
         return self.world_to_screen(*self.grid_to_world(x, y), player)
 
     def get_tile(self, x, y):
-        return self.__grid[x][y]
+        return self.__tiles_grid[x][y]
 
     def get_tile_coordinates(self, tile):
         for x in range(self.__width):
             for y in range(self.__height):
-                if self.__grid[x][y] == tile:
+                if self.__tiles_grid[x][y] == tile:
                     return (x, y)
         return None
 
     def is_tile_minable(self, x, y):
-        return isinstance(self.__grid[x][y], Tile)
+        return isinstance(self.__tiles_grid[x][y], Tile)
 
     def set_tile(self, x, y, value):
-        self.__grid[x][y] = value
+        self.__tiles_grid[x][y] = value
 
     def get_tile_size(self):
         return self.__tile_size

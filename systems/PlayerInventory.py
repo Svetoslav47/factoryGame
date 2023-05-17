@@ -70,10 +70,12 @@ class PlayerInventory(Inventory):
         mouse_y_index = int(
             mouse_y // (self.__box_size + self.__box_padding_y))
 
-        print(mouse_y_index * self.__columns + mouse_x_index)
         return mouse_y_index * self.__columns + mouse_x_index
 
     def is_mouse_in_inventory_screen(self, mouse_x, mouse_y):
+        if not self.__player.get_is_inventory_open():
+            return False
+
         inventory_x = self._screen.get_width() // 2 - \
             self.__screen_size_x // 2
         inventory_y = self._screen.get_height() // 2 - \

@@ -24,13 +24,6 @@ class Inventory:
                             self._inventory[x].get_amount() + item.get_amount())
                         return True
                     else:
-                        print(
-                            f"Item {item.get_item_id()} is too big to fit in the stack. Splitting...")
-                        print(f"Item amount: {item.get_amount()}")
-                        print(
-                            f"Stack size: {self._inventory[x].get_stack_size()}")
-                        print(
-                            f"Stack amount: {self._inventory[x].get_amount()}")
 
                         item.set_amount(item.get_amount() - (self._inventory[x].get_stack_size() -
                                         self._inventory[x].get_amount()))
@@ -61,6 +54,9 @@ class Inventory:
                     return self.remove_item(item_id, amount)
 
         return False
+
+    def get_slot(self, index):
+        return self._inventory[index]
 
     def pop_slot(self, index):
         item = self._inventory[index]

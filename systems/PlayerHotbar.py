@@ -9,7 +9,7 @@ class PlayerHotbar:
         self.__inventory = inventory
         self.__hotbarSize = 10
         self.__hotbar = [None] * self.__hotbarSize
-        self.__selected = -1
+        self.__selected = None
         self.__box_size = 40
         self.__box_padding = self.__box_size // 10
 
@@ -43,12 +43,11 @@ class PlayerHotbar:
                 self.__hotbar[x].drawInHotbar(
                     box_x, box_y, self.__box_size, amount)
 
-            if self.__hotbar[x].is_buildable():
-                self.__hotbar[x].draw_build_preview(mouse_x_grid, mouse_y_grid)
-
     def select(self, index):
         if index == self.__selected:
-            self.__selected = -1
+            self.__selected = None
+        elif index == None:
+            self.__selected = None
         elif index < len(self.__hotbar) and self.__hotbar[index] != None:
             self.__selected = index
 
