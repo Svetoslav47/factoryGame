@@ -20,7 +20,8 @@ class GameManager:
         pygame.display.set_caption("Factory Game")
         self.screen = pygame.display.set_mode((800, 600))
 
-        self.grid = Grid(self.screen, tile_size=50, width=20, height=20)
+        self.grid = Grid(self.screen, tile_size=50,
+                         width=grid_width, height=grid_height)
 
         self.player = Player(screen=self.screen,
                              grid=self.grid,

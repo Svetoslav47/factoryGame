@@ -17,8 +17,8 @@ class Miner(Building):
     def __init__(self, screen, grid, x_grid, y_grid):
         super().__init__(screen, grid, x_grid, y_grid, Miner.width, Miner.height, "miner")
 
-    def draw(self, player):
-        super().draw(player, Miner.pieces)
+    def draw(self, player, mouse_hover):
+        super().draw(player, mouse_hover, Miner.pieces)
 
     @staticmethod
     def draw_build_preview(screen, grid, player, mouse_x, mouse_y):

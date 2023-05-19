@@ -1,9 +1,11 @@
 import pygame
 
-from systems.PlayerInventory import PlayerInventory
+from systems.Inventory import Inventory
 from systems.Miner import Miner
+from systems.PlayerCrafter import PlayerCrafter
 from systems.PlayerHotbar import PlayerHotbar
 from systems.PlayerHand import PlayerHand
+from systems.PlayerHud import PlayerHud
 
 from tiles.Tile import Tile
 
@@ -19,12 +21,16 @@ class Player:
         self.__y = y
         self.__size = size
         self.__speed = speed
-        self.__inventory = PlayerInventory(screen, self)
+        self.__inventory = Inventory(screen)
         self.__is_inventory_open = False
         self.__miner = Miner(grid, 1, self.__inventory, clock)
+        self.__crafter = PlayerCrafter(screen, clock, self.__inventory)
         self.__hotbar = PlayerHotbar(screen, self, self.__inventory)
         self.__player_hand = PlayerHand(
             screen, self.__grid, self, self.__hotbar)
+
+        self.__hud = PlayerHud(
+            screen, self, self.__inventory, self.__hotbar, None)
         self.__hotbar.set_slot(0, IronOre(screen=self.__screen))  # temp
 
     def draw(self, mouse_buttons, mouse_x, mouse_y):
@@ -50,23 +56,18 @@ class Player:
                 (self.__grid.get_height() * self.__grid.get_tile_size() -
                  self.__screen.get_height()) - self.__size // 2
 
-        pygame.draw.rect(self.__screen, (255, 0, 0),
-                         (draw_x, draw_y, self.__size, self.__size))
+        is_mining = mouse_buttons[2] and self.__miner.get_mining_tile() != None
 
-        if self.__is_inventory_open:
-            self.__inventory.draw()
+        # draw player
+        if not self.__is_inventory_open:
+            pygame.draw.rect(self.__screen, (255, 0, 0),
+                             (draw_x, draw_y, self.__size, self.__size))
 
-        if mouse_buttons[2] and self.__grid.is_tile_minable(mouse_x_grid, mouse_y_grid) and self.__miner.get_mining_tile() != None:
-            # draw mining progress bar at the center of the bottom of the screen
-            pygame.draw.rect(self.__screen, (0, 0, 0), (self.__screen.get_width(
-            ) // 2 - 50, self.__screen.get_height() - 75, 100, 10))
-            pygame.draw.rect(self.__screen, (255, 255, 255), (self.__screen.get_width(
-            ) // 2 - 50, self.__screen.get_height() - 75, 100 * self.__miner.get_progress(), 10))
-
-        self.__hotbar.draw(mouse_x_grid, mouse_y_grid)
+        self.__hud.draw(mouse_x, mouse_y,
+                        self.__is_inventory_open, is_mining, self.__miner.get_progress(), None, None, None)
 
         self.__player_hand.draw(
-            mouse_x, mouse_y, self.__inventory.is_mouse_in_inventory_screen(mouse_x, mouse_y) and self.__is_inventory_open)
+            mouse_x, mouse_y, self.__hud.is_mouse_in_inventory_window(mouse_x, mouse_y) and self.__is_inventory_open)
 
     def update(self, keys, mouse_buttons, mouse_x, mouse_y, events):
         mouse_x_grid, mouse_y_grid = self.__grid.screen_to_grid(
@@ -94,13 +95,15 @@ class Player:
                     self.toggle_inventory()
 
         if left_mouse_button_down_event:
-            self.__player_hand.left_click(mouse_x, mouse_y, self.__inventory.is_mouse_in_inventory_screen(mouse_x, mouse_y),
-                                          self.__inventory, self.__inventory.get_box_index_from_screen(mouse_x, mouse_y))
+            self.__player_hand.left_click(mouse_x, mouse_y, self.__hud.is_mouse_in_inventory_window(mouse_x, mouse_y) and self.__is_inventory_open,
+                                          *self.__hud.get_box_from_screen(mouse_x, mouse_y))
         if self.__is_inventory_open:
             self.is_mining = False
 
         if mouse_buttons[2] == 1:
             self.__miner.update(mouse_x_grid, mouse_y_grid)
+
+        self.__crafter.update()
 
     def move(self, x, y):
         if (self.__is_inventory_open):

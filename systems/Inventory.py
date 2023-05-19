@@ -63,6 +63,9 @@ class Inventory:
         self._inventory[index] = None
         return item
 
+    def get_size(self):
+        return self._inventory_size
+
     def set_slot(self, index, item):
         if self._inventory[index] == None:
             self._inventory[index] = item

@@ -72,8 +72,8 @@ class Grid:
         num_squares_x = self.__screen.get_width() // self.__tile_size + 2
         num_squares_y = self.__screen.get_height() // self.__tile_size + 2
 
-        for y in range(num_squares_y):
-            for x in range(num_squares_x):
+        for x in range(num_squares_x):
+            for y in range(num_squares_y):
                 square_x = x * self.__tile_size - square_offset_x
                 square_y = y * self.__tile_size - square_offset_y
 
@@ -92,13 +92,18 @@ class Grid:
                 self.__tiles_grid[square_x_index][square_y_index].draw(
                     self.__screen, square_x, square_y, self.__tile_size)
 
-                if self.is_tile_minable(square_x_index, square_y_index):
-                    if square_x_index == mouse_x_grid and square_y_index == mouse_y_grid:
+                if mouse_x_grid == square_x_index and mouse_y_grid == square_y_index:
+                    if self.__tiles_grid[square_x_index][square_y_index].is_solid():
+                        border_width = 2
                         pygame.draw.rect(self.__screen, (0, 0, 0), (square_x, square_y,
-                                                                    self.__tile_size, self.__tile_size), 2)
+                                                                    self.__tile_size, self.__tile_size), border_width)
 
         for building in self.__buildings:
-            building.draw(player)
+            # see if mouse govers the building
+            mouse_hover = False
+            if building.get_x_grid() <= mouse_x_grid and building.get_x_grid() + building.get_width() > mouse_x_grid and building.get_y_grid() <= mouse_y_grid and building.get_y_grid() + building.get_height() > mouse_y_grid:
+                mouse_hover = True
+            building.draw(player, mouse_hover)
 
     def build(self, x_grid, y_grid, building, width, height):
         if not self.can_build(x_grid, y_grid, width, height):
@@ -107,7 +112,7 @@ class Grid:
         for i in range(width):
             for j in range(height):
                 self.__buildings_grid[x_grid +
-                                      i][y_grid + j] = building.get_id()
+                                      i][y_grid + j] = building
 
         self.__buildings.append(building)
 
@@ -160,6 +165,8 @@ class Grid:
         return None
 
     def is_tile_minable(self, x, y):
+        # print(self.__tiles_grid[x][y] !=
+        #       None or self.__buildings_grid[x][y] != None)
         return isinstance(self.__tiles_grid[x][y], Tile)
 
     def set_tile(self, x, y, value):

@@ -11,16 +11,35 @@ class Building():
         self._height = height
         self._id = building_id
 
-    def draw(self, player, pieces):
+    def draw(self, player, mouse_hover, pieces):
         for i in range(self._height):
             for j in range(self._width):
                 draw_x, draw_y = self._grid.grid_to_screen(
                     self._x_grid + j, self._y_grid + i, player)
                 self._screen.blit(pygame.transform.scale(
                     pieces[i * self._width + j], (self._grid.get_tile_size(), self._grid.get_tile_size())), (draw_x, draw_y))
+        if mouse_hover:
+            # draw black border
+            border_width = 2
+            draw_x, draw_y = self._grid.grid_to_screen(
+                self._x_grid, self._y_grid, player)
+            pygame.draw.rect(self._screen, (0, 0, 0), (draw_x, draw_y, self._width *
+                             self._grid.get_tile_size(), self._height * self._grid.get_tile_size()), border_width)
 
     def get_id(self):
         return self._id
+
+    def get_x_grid(self):
+        return self._x_grid
+
+    def get_y_grid(self):
+        return self._y_grid
+
+    def get_width(self):
+        return self._width
+
+    def get_height(self):
+        return self._height
 
     @staticmethod
     def draw_build_preview(screen, grid, player, mouse_x, mouse_y, pieces, width, height):
