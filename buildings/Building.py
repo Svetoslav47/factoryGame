@@ -2,7 +2,7 @@ import pygame
 
 
 class Building():
-    def __init__(self, screen, grid, x_grid, y_grid, width, height, building_id):
+    def __init__(self, screen, grid, x_grid, y_grid, width, height, building_id, item, hardness=1):
         self._screen = screen
         self._grid = grid
         self._x_grid = x_grid
@@ -10,6 +10,8 @@ class Building():
         self._width = width
         self._height = height
         self._id = building_id
+        self._item = item
+        self.__hardness = hardness
 
     def draw(self, player, mouse_hover, pieces):
         for i in range(self._height):
@@ -19,12 +21,19 @@ class Building():
                 self._screen.blit(pygame.transform.scale(
                     pieces[i * self._width + j], (self._grid.get_tile_size(), self._grid.get_tile_size())), (draw_x, draw_y))
         if mouse_hover:
-            # draw black border
             border_width = 2
             draw_x, draw_y = self._grid.grid_to_screen(
                 self._x_grid, self._y_grid, player)
             pygame.draw.rect(self._screen, (0, 0, 0), (draw_x, draw_y, self._width *
                              self._grid.get_tile_size(), self._height * self._grid.get_tile_size()), border_width)
+
+    def mine(self, inventory):
+        inventory.add_item(self._item(self._screen, 1))
+        self._grid.deconstruct_building(
+            self._x_grid, self._y_grid, self._width, self._height, self)
+
+    def get_hardness(self):
+        return self.__hardness
 
     def get_id(self):
         return self._id

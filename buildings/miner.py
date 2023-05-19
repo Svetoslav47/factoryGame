@@ -14,8 +14,9 @@ class Miner(Building):
             pieces.append(image.subsurface(
                 (j * piece_width, i * piece_height, piece_width, piece_height)))
 
-    def __init__(self, screen, grid, x_grid, y_grid):
-        super().__init__(screen, grid, x_grid, y_grid, Miner.width, Miner.height, "miner")
+    def __init__(self, screen, grid, x_grid, y_grid, item):
+        super().__init__(screen, grid, x_grid, y_grid,
+                         Miner.width, Miner.height, "miner", item)
 
     def draw(self, player, mouse_hover):
         super().draw(player, mouse_hover, Miner.pieces)

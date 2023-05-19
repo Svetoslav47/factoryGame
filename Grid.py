@@ -5,7 +5,6 @@ import math
 import random
 import numpy as np
 
-from tiles.Tile import Tile
 from tiles.IronOre import IronOreTile
 
 ores = {
@@ -118,6 +117,15 @@ class Grid:
 
         return True
 
+    def deconstruct_building(self, x_grid, y_grid, width, height, building):
+        for i in range(width):
+            for j in range(height):
+                self.__buildings_grid[x_grid + i][y_grid + j] = None
+
+        self.__buildings.remove(building)
+
+        return True
+
     def can_build(self, x_grid, y_grid, width, height):
         for i in range(width):
             for j in range(height):
@@ -154,7 +162,12 @@ class Grid:
     def grid_to_screen(self, x, y, player):
         return self.world_to_screen(*self.grid_to_world(x, y), player)
 
-    def get_tile(self, x, y):
+    def get_tile(self, x, y, is_player=False):
+        if is_player:
+            if self.__buildings_grid[x][y] != None:
+                return self.__buildings_grid[x][y]
+            if self.__tiles_grid[x][y] != None:
+                return self.__tiles_grid[x][y]
         return self.__tiles_grid[x][y]
 
     def get_tile_coordinates(self, tile):
@@ -164,10 +177,11 @@ class Grid:
                     return (x, y)
         return None
 
-    def is_tile_minable(self, x, y):
-        # print(self.__tiles_grid[x][y] !=
-        #       None or self.__buildings_grid[x][y] != None)
-        return isinstance(self.__tiles_grid[x][y], Tile)
+    def is_tile_minable(self, x, y, is_player=False):
+        if is_player:
+            return self.__tiles_grid[x][y] != None or self.__buildings_grid[x][y] != None
+
+        return self.__tiles_grid[x][y] != None and self.__tiles_grid[x][y].is_minable()
 
     def set_tile(self, x, y, value):
         self.__tiles_grid[x][y] = value

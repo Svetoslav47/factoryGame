@@ -23,7 +23,7 @@ class Player:
         self.__speed = speed
         self.__inventory = Inventory(screen)
         self.__is_inventory_open = False
-        self.__miner = Miner(grid, 1, self.__inventory, clock)
+        self.__miner = Miner(grid, 1, self.__inventory, clock, is_player=True)
         self.__crafter = PlayerCrafter(screen, clock, self.__inventory)
         self.__hotbar = PlayerHotbar(screen, self, self.__inventory)
         self.__player_hand = PlayerHand(
