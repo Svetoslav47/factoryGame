@@ -19,17 +19,17 @@ class PlayerHud:
             (self.__inventory_columns*1.1)
         # acount for the rightmost padding
 
-        number_of_rows = math.ceil(
+        self.__inventory_rows = math.ceil(
             self._inventory.get_size() / self.__inventory_columns)
         inventory_box_height = self.__inventory_screen_size_y / \
-            (number_of_rows*1.1)
+            (self.__inventory_rows*1.1)
         self.__inventory_box_size = min(
             inventory_box_width, inventory_box_height)
 
         self.__inventory_box_padding_x = (self.__inventory_screen_size_x - (self.__inventory_box_size * self.__inventory_columns)) / \
             (self.__inventory_columns + 1)
-        self.__inventory_box_padding_y = (self.__inventory_screen_size_y - (self.__inventory_box_size * number_of_rows)) / \
-            (number_of_rows + 1)
+        self.__inventory_box_padding_y = (self.__inventory_screen_size_y - (self.__inventory_box_size * self.__inventory_rows)) / \
+            (self.__inventory_rows + 1)
 
         # hotbar things
         self.__hotbar_screen_size_x = self.__window_screen_size_x / 4 * 3
@@ -49,26 +49,65 @@ class PlayerHud:
         self.__mining_progress_bar_height = 10
 
         # crafting recepies select
-        self.__crafting_screen_size_x = self.__window_screen_size_x / 2
-        self.__crafting_screen_size_y = self.__window_screen_size_y
-        self.__crafting_box_size = self.__crafting_screen_size_y / 5
-        self.__crafting_box_padding_x = (self.__crafting_screen_size_x - (self.__crafting_box_size * 3)) / \
-            (3 + 1)
-        self.__crafting_box_padding_y = (self.__crafting_screen_size_y - (self.__crafting_box_size * 3)) / \
-            (3 + 1)
+        self.__recepies = recepies
+        self.__recepie_screen_size_x = self.__window_screen_size_x - \
+            self.__inventory_screen_size_x
+        self.__recepie_screen_size_y = self.__window_screen_size_y
+
+        self.__recepie_screen_columns = math.floor(
+            len(recepies)**0.5)
+
+        crafting_recepie_box_width = self.__recepie_screen_size_x / \
+            (self.__recepie_screen_columns*1.1)
+
+        self.__recepie_screen_rows = math.ceil(
+            len(recepies) / self.__recepie_screen_columns)
+        crafting_recepie_box_height = self.__recepie_screen_size_y / \
+            (self.__recepie_screen_rows*1.1)
+
+        self.__recepie_box_size = min(
+            crafting_recepie_box_width, crafting_recepie_box_height)
+
+        self.__recepie_box_padding_x = (self.__recepie_screen_size_x - (self.__recepie_box_size * self.__recepie_screen_columns)) / \
+            (self.__recepie_screen_columns + 1)
+        self.__recepie_box_padding_y = (self.__recepie_screen_size_y - (self.__recepie_box_size * self.__recepie_screen_rows)) / \
+            (self.__recepie_screen_rows + 1)
 
         # crafting queue
-
-        # crafting progress bar
+        self.__recepie_queue = []
 
     def is_mouse_in_inventory_window(self, mouse_x, mouse_y):
         return (self._screen.get_width() / 2 - self.__window_screen_size_x / 2 <= mouse_x <= self._screen.get_width() / 2 + self.__window_screen_size_x / 2) and (self._screen.get_height() / 2 - self.__window_screen_size_y / 2 <= mouse_y <= self._screen.get_height() / 2 + self.__window_screen_size_y / 2)
 
-    def __is_mouse_in_player_inventory(self, mouse_x, mouse_y):
+    def is_mouse_in_player_inventory(self, mouse_x, mouse_y):
         return (self._screen.get_width() / 2 - self.__window_screen_size_x / 2 <= mouse_x <= self._screen.get_width() / 2 - self.__window_screen_size_x / 2 + self.__inventory_screen_size_x) and (self._screen.get_height() / 2 - self.__window_screen_size_y / 2 <= mouse_y <= self._screen.get_height() / 2 - self.__window_screen_size_y / 2 + self.__inventory_screen_size_y)
 
+    def is_mouse_in_player_recipies(self, mouse_x, mouse_y):
+        # if machine is not open
+        # the recipies are in the right side of the inventory window
+        return (self._screen.get_width() / 2 + self.__window_screen_size_x / 2 - self.__recepie_screen_size_x <= mouse_x <= self._screen.get_width() / 2 + self.__window_screen_size_x / 2) and (self._screen.get_height() / 2 - self.__window_screen_size_y / 2 <= mouse_y <= self._screen.get_height() / 2 - self.__window_screen_size_y / 2 + self.__recepie_screen_size_y)
+
+    def is_mouse_in_hotbar(self, mouse_x, mouse_y):
+        return (self._screen.get_width() / 2 - self.__window_screen_size_x / 2 <= mouse_x <= self._screen.get_width() / 2 + self.__window_screen_size_x / 2) and (self._screen.get_height() / 2 + self.__window_screen_size_y / 2 - self.__hotbar_screen_size_y <= mouse_y <= self._screen.get_height() / 2 + self.__window_screen_size_y / 2)
+
+    def get_recepie_from_screen(self, mouse_x, mouse_y):
+        recepie_index = None
+        if self.is_mouse_in_player_recipies(mouse_x, mouse_y):
+            x = math.floor((mouse_x - (self._screen.get_width() / 2 + self.__window_screen_size_x / 2 -
+                           self.__recepie_screen_size_x + self.__recepie_box_padding_x)) / (self.__recepie_box_size + self.__recepie_box_padding_x))
+            y = math.floor((mouse_y - (self._screen.get_height() / 2 - self.__window_screen_size_y / 2 +
+                           self.__recepie_box_padding_y)) / (self.__recepie_box_size + self.__recepie_box_padding_y))
+            recepie_index = x + y * self.__recepie_screen_columns
+            if recepie_index < 0 or recepie_index >= len(self.__recepies):
+                recepie_index = None
+
+        if recepie_index is None:
+            return None
+
+        return self.__recepies[recepie_index]
+
     def get_box_from_screen(self, mouse_x, mouse_y):
-        if self.__is_mouse_in_player_inventory(mouse_x, mouse_y):
+        if self.is_mouse_in_player_inventory(mouse_x, mouse_y):
             x = math.floor((mouse_x - (self._screen.get_width() / 2 - self.__window_screen_size_x / 2 +
                            self.__inventory_box_padding_x)) / (self.__inventory_box_size + self.__inventory_box_padding_x))
             y = math.floor((mouse_y - (self._screen.get_height() / 2 - self.__window_screen_size_y / 2 +
@@ -77,10 +116,11 @@ class PlayerHud:
         else:
             return None, None
 
-    def draw(self, mouse_x, mouse_y, is_window_open, is_mining, mining_progress, is_crafting, crafting_queue, crafting_progress):
+    def draw(self, mouse_x, mouse_y, is_window_open, is_mining, mining_progress, is_crafting, crafting_queue, crafting_progress, ):
         if is_window_open:
             self.__draw_window()
             self.__draw_inventory()
+            self.__draw_crafting_recepies(mouse_x, mouse_y)
 
         self.__draw_hotbar()
         if is_mining:
@@ -94,12 +134,12 @@ class PlayerHud:
 
     def __draw_inventory(self):
         for x in range(self.__inventory_columns):
-            for y in range(math.ceil(self._inventory.get_size() / self.__inventory_columns)):
+            for y in range(self.__inventory_rows):
 
-                box_x = self._screen.get_width() // 2 - self.__inventory_screen_size_x + self.__inventory_box_padding_x + \
+                box_x = self._screen.get_width() // 2 - self.__window_screen_size_x // 2 + self.__inventory_box_padding_x + \
                     x * (self.__inventory_box_size +
                          self.__inventory_box_padding_x)
-                box_y = self._screen.get_height() // 2 - self.__inventory_screen_size_y // 2 + self.__inventory_box_padding_y + \
+                box_y = self._screen.get_height() // 2 - self.__window_screen_size_y // 2 + self.__inventory_box_padding_y + \
                     y * (self.__inventory_box_size +
                          self.__inventory_box_padding_y)
 
@@ -136,9 +176,10 @@ class PlayerHud:
             pygame.draw.rect(self._screen, (255, 255, 255),
                              (box_x, box_y, self.__hotbar_box_size, self.__hotbar_box_size))
 
-            if self._hotbar.get_slot(i)[0] != None:
-                self._hotbar.get_slot(i)[0].drawInHotbar(
-                    box_x, box_y, self.__hotbar_box_size, self._hotbar.get_slot(i)[1])
+            slot = self._hotbar.get_slot(i)
+            if slot[0] != None:
+                slot[0].drawInHotbar(
+                    box_x, box_y, self.__hotbar_box_size, slot[1])
 
     def __draw_mining_progress_bar(self, mining_progress):
         # draw mining progress bar background 10 px above hotbar
@@ -152,3 +193,34 @@ class PlayerHud:
                                                      self._screen.get_height() - self.__hotbar_screen_size_y -
                                                      10 - self.__mining_progress_bar_height,
                                                      self.__mining_progress_bar_width * mining_progress, self.__mining_progress_bar_height))
+
+    def __draw_crafting_recepies(self, mouse_x, mouse_y):
+        for i in range(self.__recepie_screen_columns):
+            for j in range(self.__recepie_screen_rows):
+                box_x = self._screen.get_width() // 2 - self.__window_screen_size_x // 2 + self.__inventory_screen_size_x + self.__recepie_box_padding_x + \
+                    i * (self.__recepie_box_size +
+                         self.__recepie_box_padding_x)
+                box_y = self._screen.get_height() // 2 - self.__window_screen_size_y // 2 + self.__recepie_box_padding_y + \
+                    j * (self.__recepie_box_size +
+                         self.__recepie_box_padding_y)
+
+                if j*self.__recepie_screen_columns + i > len(self.__recepies) - 1:
+                    break
+
+                pygame.draw.rect(self._screen, (255, 255, 255),
+                                 (box_x, box_y, self.__recepie_box_size, self.__recepie_box_size))
+
+                self.__recepies[j*self.__recepie_screen_columns + i].draw_preview(
+                    self._screen, box_x, box_y, self.__recepie_box_size)
+
+                if mouse_x >= box_x and mouse_x <= box_x + self.__recepie_box_size and mouse_y >= box_y and mouse_y <= box_y + self.__recepie_box_size:
+                    ingredients = self.__recepies[j *
+                                                  self.__recepie_screen_columns + i].get_ingredients()
+
+                    pygame.draw.rect(self._screen, (255, 0, 0),
+                                     (mouse_x, mouse_y, 200, 200))
+
+                    # for k in range(len(ingredients)):
+                    #     if ingredients[k] != None:
+                    #         ingredients[k][0].drawInInventory(
+                    #             mouse_x + 10 + k * 50, mouse_y + 10, 50)

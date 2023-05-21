@@ -5,6 +5,7 @@ from Grid import Grid
 from Player import Player
 
 from items.Miner import Miner
+from items.CopperIngot import CopperIngot
 
 
 class GameManager:
@@ -51,6 +52,9 @@ class GameManager:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_u:
                         self.player.add_item_to_inventory(Miner(self.screen))
+                    if event.key == pygame.K_i:
+                        self.player.add_item_to_inventory(
+                            CopperIngot(self.screen))
 
             keys = pygame.key.get_pressed()
 

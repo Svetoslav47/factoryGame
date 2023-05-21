@@ -39,8 +39,8 @@ class Item:
     def is_buildable(self):
         return False
 
-    def get_item_id(self):
-        return self._item_id
+    def get_item_id(item_id):
+        return item_id
 
     def get_amount(self):
         return self._amount

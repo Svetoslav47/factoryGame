@@ -40,16 +40,17 @@ class Inventory:
         return False
 
     def remove_item(self, item_id, amount):
-        if amount_of_item(item_id) < amount:
+        if self.amount_of_item(item_id) < amount:
             return False
 
         for x in range(self._inventory_size):
-            if self._inventory[x] != None and self._inventory[x].item_id == item_id:
-                if self._inventory[x].amount - amount > 0:
-                    self._inventory[x].amount -= amount
+            if self._inventory[x] != None and self._inventory[x].get_item_id() == item_id:
+                if self._inventory[x].get_amount() - amount > 0:
+                    self._inventory[x].set_amount(
+                        self._inventory[x].get_amount() - amount)
                     return True
                 else:
-                    amount -= self._inventory[x].amount
+                    amount -= self._inventory[x].get_amount()
                     self._inventory[x] = None
                     return self.remove_item(item_id, amount)
 
@@ -62,6 +63,15 @@ class Inventory:
         item = self._inventory[index]
         self._inventory[index] = None
         return item
+
+    def pop_slot_with_item(self, item_id):
+        for x in range(self._inventory_size):
+            if self._inventory[x] != None and self._inventory[x].get_item_id() == item_id:
+                item = self._inventory[x]
+                self._inventory[x] = None
+                return item
+
+        return None
 
     def get_size(self):
         return self._inventory_size

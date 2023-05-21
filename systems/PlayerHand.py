@@ -2,29 +2,43 @@ from items.Item import Item
 
 
 class PlayerHand():
-    def __init__(self, screen, grid, player, player_hotbar, box_size=50):
+    def __init__(self, screen, grid, player, player_hotbar, hud, box_size=50):
         self.__screen = screen
         self.__grid = grid
         self.__player = player
         self.__item = None
         self.__box_size = box_size
         self.__player_hotbar = player_hotbar
+        self.__hud = hud
 
-    def draw(self, mouse_x, mouse_y, is_mouse_in_inventory_screen):
+    def draw(self, mouse_x, mouse_y):
         if self.__item is not None:
             if not self.__item.is_buildable():
                 self.__item.drawInInventory(mouse_x, mouse_y, self.__box_size)
                 return
 
-            if is_mouse_in_inventory_screen:
+            if self.__hud.is_mouse_in_inventory_window(mouse_x, mouse_y):
                 self.__item.drawInInventory(mouse_x, mouse_y, self.__box_size)
             else:
                 self.__item.draw_build_preview(
                     self.__grid, self.__player, mouse_x, mouse_y)
 
-    def left_click(self, mouse_x, mouse_y, is_mouse_in_inventory_screen, inventory, index, replenish=False):
-        if is_mouse_in_inventory_screen:
-            self.grab(inventory, index, replenish)
+    def left_click(self, mouse_x, mouse_y, is_inventory_open):
+
+        if self.__hud.is_mouse_in_player_inventory(
+                mouse_x, mouse_y) and is_inventory_open:
+            if self.__hud.is_mouse_in_player_recipies(mouse_x, mouse_y):
+                return
+
+            inventory, index = self.__hud.get_box_from_screen(
+                mouse_x, mouse_y)
+
+            self._grab(inventory, index)
+            return
+
+        if self.__hud.is_mouse_in_player_recipies(mouse_x, mouse_y) and is_inventory_open:
+            recepie = self.__hud.get_recepie_from_screen(mouse_x, mouse_y)
+            self.__player.craft(recepie)
             return
 
         if self.__item is None:
@@ -38,14 +52,7 @@ class PlayerHand():
             if self.__item.get_amount() <= 0:
                 self.__item = None
 
-    def grab(self, inventory, index, replenish=False):
-        if index is None:
-            return
-
-        if replenish is None:
-            self.__player_hotbar.select(None)
-
-        self.__replenish = replenish
+    def _grab(self, inventory, index):
         if self.__item is None:
             self.__item = inventory.pop_slot(index)
             return True
