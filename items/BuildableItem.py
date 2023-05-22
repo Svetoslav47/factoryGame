@@ -33,6 +33,3 @@ class BuildableItem(Item):
 
     def is_buildable(self):
         return True
-
-    def get_item_id(item_id):
-        return item_id

@@ -38,7 +38,7 @@ class PlayerHotbar:
         if self.__hotbar[index] == None:
             return None, 0
 
-        return (self.__hotbar[index], self.__inventory.amount_of_item(self.__hotbar[index].get_item_id()))
+        return (self.__hotbar[index], self.__inventory.amount_of_item(self.__hotbar[index].item_id))
 
     def get_size(self):
         return self.__hotbarSize

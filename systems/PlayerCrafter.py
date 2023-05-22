@@ -28,11 +28,13 @@ class PlayerCrafter:
         if recepie.can_craft(self._inventory):
             for ingredient in recepie.get_ingredients():
                 self._inventory.remove_item(
-                    ingredient[0].get_item_id(), ingredient[1])
+                    ingredient[0].item_id, ingredient[1])
             self._add_to_queue(recepie)
 
     def get_queue(self):
         return self._queue
 
     def get_crafting_progress(self):
-        return self._queue[0].get_craft_time() / self._crafting_time
+        if len(self._queue) == 0:
+            return None
+        return self._crafting_time / self._queue[0].get_craft_time()

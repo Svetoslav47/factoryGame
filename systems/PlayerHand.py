@@ -11,13 +11,13 @@ class PlayerHand():
         self.__player_hotbar = player_hotbar
         self.__hud = hud
 
-    def draw(self, mouse_x, mouse_y):
+    def draw(self, mouse_x, mouse_y, is_inventory_open):
         if self.__item is not None:
             if not self.__item.is_buildable():
                 self.__item.drawInInventory(mouse_x, mouse_y, self.__box_size)
                 return
 
-            if self.__hud.is_mouse_in_inventory_window(mouse_x, mouse_y):
+            if self.__hud.is_mouse_in_inventory_window(mouse_x, mouse_y) and is_inventory_open:
                 self.__item.drawInInventory(mouse_x, mouse_y, self.__box_size)
             else:
                 self.__item.draw_build_preview(
@@ -38,6 +38,8 @@ class PlayerHand():
 
         if self.__hud.is_mouse_in_player_recipies(mouse_x, mouse_y) and is_inventory_open:
             recepie = self.__hud.get_recepie_from_screen(mouse_x, mouse_y)
+            if recepie is None:
+                return
             self.__player.craft(recepie)
             return
 
@@ -62,7 +64,7 @@ class PlayerHand():
             self.__item = None
             return True
 
-        if not self.__item.get_item_id() == inventory.get_slot(index).get_item_id():
+        if not self.__item.item_id == inventory.get_slot(index).item_id:
             temp = self.__item
             self.__item = inventory.pop_slot(index)
             inventory.set_slot(index, temp)

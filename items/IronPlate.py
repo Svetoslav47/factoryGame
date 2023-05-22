@@ -1,21 +1,19 @@
-from items.BuildableItem import BuildableItem
-from buildings.miner import Miner as MinerBuilding
-
+from items.Item import Item
 import pygame
 STACK = 64
 
-image = pygame.image.load("assets/items/Miner.png")
-item_id = "miner"
-item_name = "Miner"
+image = pygame.image.load("assets/items/IronPlate.png")
+item_id = "iron_plate"
+item_name = "Iron Plate"
 
 
-class Miner(BuildableItem):
+class IronPlate(Item):
     image = image
     item_id = item_id
     item_name = item_name
 
     def __init__(self, screen, item_count=1):
-        super().__init__(screen, item_id, item_count, STACK, MinerBuilding)
+        super().__init__(screen, item_id, item_count, STACK)
 
     def drawInInventory(self, draw_x, draw_y, box_size):
         super().drawInInventory(draw_x, draw_y, box_size, image)
@@ -25,4 +23,4 @@ class Miner(BuildableItem):
 
     @staticmethod
     def draw_item_preview(screen, x, y, box_size):
-        BuildableItem.draw_item_preview(screen, x, y, box_size, image)
+        Item.draw_item_preview(screen, x, y, box_size, image)

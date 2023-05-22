@@ -6,9 +6,11 @@ import random
 import numpy as np
 
 from tiles.IronOre import IronOreTile
+from tiles.CopperOre import CopperOreTile
 
 ores = {
-    "iron_ore": IronOreTile
+    "iron_ore": IronOreTile,
+    "copper_ore": CopperOreTile
 }
 
 
@@ -24,7 +26,7 @@ class Grid:
                                  for y in range(self.__height)]
         self.__buildings = []
         self.__generate_ore(12345, "iron_ore", size=5)
-        # self.__generate_ore(67890, "iron_ore", size=5)
+        self.__generate_ore(67890, "copper_ore", size=5)
 
     def __generate_ore(self, seed, ore_type, size=20):
         random.seed(seed)

@@ -4,10 +4,10 @@ import pygame
 class Recepie:
     def can_craft(ingredients, inventory):
         for ingredient in ingredients:
-            if inventory.amount_of_item(ingredient[0].get_item_id()) < ingredient[1]:
+            if inventory.amount_of_item(ingredient[0].item_id) < ingredient[1]:
                 # print(ingredient[0])
                 print("Not enough " +
-                      ingredient[0].get_item_id() + " to craft")
+                      ingredient[0].item_id + " to craft")
                 return False
         return True
 

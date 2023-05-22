@@ -11,13 +11,13 @@ class Inventory:
     def amount_of_item(self, item_id):
         amount = 0
         for x in range(self._inventory_size):
-            if self._inventory[x] != None and self._inventory[x].get_item_id() == item_id:
+            if self._inventory[x] != None and self._inventory[x].item_id == item_id:
                 amount += self._inventory[x].get_amount()
         return amount
 
     def add_item(self, item):
         for x in range(self._inventory_size):
-            if self._inventory[x] != None and self._inventory[x].get_item_id() == item.get_item_id():
+            if self._inventory[x] != None and self._inventory[x].item_id == item.item_id:
                 if self._inventory[x].get_stack_size() - self._inventory[x].get_amount() > 0:
                     if self._inventory[x].get_stack_size() - self._inventory[x].get_amount() >= item.get_amount():
                         self._inventory[x].set_amount(
@@ -44,7 +44,7 @@ class Inventory:
             return False
 
         for x in range(self._inventory_size):
-            if self._inventory[x] != None and self._inventory[x].get_item_id() == item_id:
+            if self._inventory[x] != None and self._inventory[x].item_id == item_id:
                 if self._inventory[x].get_amount() - amount > 0:
                     self._inventory[x].set_amount(
                         self._inventory[x].get_amount() - amount)
@@ -66,7 +66,7 @@ class Inventory:
 
     def pop_slot_with_item(self, item_id):
         for x in range(self._inventory_size):
-            if self._inventory[x] != None and self._inventory[x].get_item_id() == item_id:
+            if self._inventory[x] != None and self._inventory[x].item_id == item_id:
                 item = self._inventory[x]
                 self._inventory[x] = None
                 return item

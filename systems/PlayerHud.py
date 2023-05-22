@@ -93,15 +93,28 @@ class PlayerHud:
     def get_recepie_from_screen(self, mouse_x, mouse_y):
         recepie_index = None
         if self.is_mouse_in_player_recipies(mouse_x, mouse_y):
-            x = math.floor((mouse_x - (self._screen.get_width() / 2 + self.__window_screen_size_x / 2 -
-                           self.__recepie_screen_size_x + self.__recepie_box_padding_x)) / (self.__recepie_box_size + self.__recepie_box_padding_x))
+            x = math.floor((mouse_x - (self._screen.get_width() / 2 + self.__window_screen_size_x / 2 - self.__recepie_screen_size_x +
+                            self.__recepie_box_padding_x)) / (self.__recepie_box_size + self.__recepie_box_padding_x))
             y = math.floor((mouse_y - (self._screen.get_height() / 2 - self.__window_screen_size_y / 2 +
-                           self.__recepie_box_padding_y)) / (self.__recepie_box_size + self.__recepie_box_padding_y))
+                            self.__recepie_box_padding_y)) / (self.__recepie_box_size + self.__recepie_box_padding_y))
             recepie_index = x + y * self.__recepie_screen_columns
-            if recepie_index < 0 or recepie_index >= len(self.__recepies):
+
+            # if the mouse is between the boxes
+            box_x = self._screen.get_width() / 2 + self.__window_screen_size_x / 2 - self.__recepie_screen_size_x + \
+                self.__recepie_box_padding_x + \
+                (self.__recepie_box_size + self.__recepie_box_padding_x) * x
+
+            box_y = self._screen.get_height() / 2 - self.__window_screen_size_y / 2 + \
+                self.__recepie_box_padding_y + \
+                (self.__recepie_box_size + self.__recepie_box_padding_y) * y
+
+            if mouse_x < box_x or mouse_x > box_x + self.__recepie_box_size or mouse_y < box_y or mouse_y > box_y + self.__recepie_box_size:
                 recepie_index = None
 
         if recepie_index is None:
+            return None
+
+        if recepie_index >= len(self.__recepies) or recepie_index < 0:
             return None
 
         return self.__recepies[recepie_index]
@@ -116,7 +129,7 @@ class PlayerHud:
         else:
             return None, None
 
-    def draw(self, mouse_x, mouse_y, is_window_open, is_mining, mining_progress, is_crafting, crafting_queue, crafting_progress, ):
+    def draw(self, mouse_x, mouse_y, is_window_open, is_mining, mining_progress, crafting_queue, crafting_progress):
         if is_window_open:
             self.__draw_window()
             self.__draw_inventory()
@@ -125,6 +138,9 @@ class PlayerHud:
         self.__draw_hotbar()
         if is_mining:
             self.__draw_mining_progress_bar(mining_progress)
+
+        if len(crafting_queue) > 0:
+            self.__draw_crafting_queue(crafting_queue, crafting_progress)
 
     def __draw_window(self):
         pygame.draw.rect(self._screen, (128, 128, 128), (self._screen.get_width() / 2 - self.__window_screen_size_x / 2,
@@ -195,6 +211,7 @@ class PlayerHud:
                                                      self.__mining_progress_bar_width * mining_progress, self.__mining_progress_bar_height))
 
     def __draw_crafting_recepies(self, mouse_x, mouse_y):
+
         for i in range(self.__recepie_screen_columns):
             for j in range(self.__recepie_screen_rows):
                 box_x = self._screen.get_width() // 2 - self.__window_screen_size_x // 2 + self.__inventory_screen_size_x + self.__recepie_box_padding_x + \
@@ -213,14 +230,48 @@ class PlayerHud:
                 self.__recepies[j*self.__recepie_screen_columns + i].draw_preview(
                     self._screen, box_x, box_y, self.__recepie_box_size)
 
-                if mouse_x >= box_x and mouse_x <= box_x + self.__recepie_box_size and mouse_y >= box_y and mouse_y <= box_y + self.__recepie_box_size:
-                    ingredients = self.__recepies[j *
-                                                  self.__recepie_screen_columns + i].get_ingredients()
+        hovered_recepie = self.get_recepie_from_screen(mouse_x, mouse_y)
+        if hovered_recepie != None:
+            ingredients = hovered_recepie.get_ingredients()
+            ingredient_box_size = 40
+            hover_width = 230
+            hover_height = 0.2*ingredient_box_size + \
+                (ingredient_box_size + 0.2 *
+                 ingredient_box_size) * len(ingredients)
+            pygame.draw.rect(self._screen, (180, 180, 180),
+                             (mouse_x, mouse_y, hover_width, hover_height))
+            for k in range(len(ingredients)):
+                ingredients[k][0].draw_item_preview(self._screen,
+                                                    mouse_x + ingredient_box_size*0.2, mouse_y + ingredient_box_size*0.2 * (k+1) + (ingredient_box_size) * k, ingredient_box_size)
 
-                    pygame.draw.rect(self._screen, (255, 0, 0),
-                                     (mouse_x, mouse_y, 200, 200))
+                text = pygame.font.SysFont("arial", 20).render(
+                    f"{ingredients[k][0].item_name}: {ingredients[k][1]}", True, (0, 0, 0))
+                textRect = text.get_rect()
+                textRect.center = (mouse_x + ingredient_box_size*0.2 + ingredient_box_size + textRect.width // 2, mouse_y +
+                                   ingredient_box_size*0.2 * (k+1) + (ingredient_box_size) * k + ingredient_box_size//2)
+                self._screen.blit(text, textRect)
 
-                    # for k in range(len(ingredients)):
-                    #     if ingredients[k] != None:
-                    #         ingredients[k][0].drawInInventory(
-                    #             mouse_x + 10 + k * 50, mouse_y + 10, 50)
+    def __draw_crafting_queue(self, crafting_queue, crafting_progress):
+        box_size = 40
+        box_padding = box_size * 0.2
+        for i in range(len(crafting_queue)):
+            box_x = box_padding + \
+                i * (box_size + box_padding)
+            box_y = box_padding
+
+            pygame.draw.rect(self._screen, (255, 255, 255),
+                             (box_x, box_y, box_size, box_size))
+
+            crafting_queue[i].draw_preview(
+                self._screen, box_x, box_y, box_size)
+
+        # draw crafting progress bar
+        bar_x = + box_padding
+        bar_y = box_padding + box_size + box_padding * 2
+        bar_width = box_size
+        bar_height = 10
+        pygame.draw.rect(self._screen, (180, 180, 180), (bar_x, bar_y,
+                                                         bar_width, bar_height))
+
+        pygame.draw.rect(self._screen, (80, 80, 80), (bar_x, bar_y,
+                                                      bar_width * crafting_progress, bar_height))

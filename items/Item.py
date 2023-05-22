@@ -39,9 +39,6 @@ class Item:
     def is_buildable(self):
         return False
 
-    def get_item_id(item_id):
-        return item_id
-
     def get_amount(self):
         return self._amount
 
@@ -50,3 +47,7 @@ class Item:
 
     def get_stack_size(self):
         return self._stack_size
+
+    def draw_item_preview(screen, x, y, box_size, image):
+        image = pygame.transform.scale(image, (box_size, box_size))
+        screen.blit(image, (x, y))

@@ -11,6 +11,7 @@ class Tile:
 
     @staticmethod
     def draw(screen, x, y, tile_size, image):
+        pygame.draw.rect(screen, (255, 255, 255), (x, y, tile_size, tile_size))
         screen.blit(pygame.transform.scale(
             image, (tile_size, tile_size)), (x, y))
 

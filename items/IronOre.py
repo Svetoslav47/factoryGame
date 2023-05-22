@@ -2,20 +2,25 @@ from items.Item import Item
 import pygame
 STACK = 64
 
+image = pygame.image.load("assets/items/IronOre.png")
+item_id = "iron_ore"
+item_name = "Iron Ore"
+
 
 class IronOre(Item):
-    image = pygame.image.load("assets/items/IronOre.png")
-    item_id = "iron_ore"
+    image = image
+    item_id = item_id
+    item_name = item_name
 
     def __init__(self, screen, item_count=1):
-        super().__init__(screen, IronOre.item_id, item_count, STACK)
+        super().__init__(screen, item_id, item_count, STACK)
 
     def drawInInventory(self, draw_x, draw_y, box_size):
-        super().drawInInventory(draw_x, draw_y, box_size, IronOre.image)
+        super().drawInInventory(draw_x, draw_y, box_size, image)
 
     def drawInHotbar(self, draw_x, draw_y, box_size, amount):
-        super().drawInHotbar(draw_x, draw_y, box_size, amount, IronOre.image)
+        super().drawInHotbar(draw_x, draw_y, box_size, amount, image)
 
     @staticmethod
-    def get_item_id():
-        return Item.get_item_id(IronOre.item_id)
+    def draw_item_preview(screen, x, y, box_size):
+        Item.draw_item_preview(screen, x, y, box_size, image)

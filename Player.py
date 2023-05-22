@@ -69,10 +69,10 @@ class Player:
                          (draw_x, draw_y, self.__size, self.__size))
 
         self.__hud.draw(mouse_x, mouse_y,
-                        self.__is_inventory_open, is_mining, self.__miner.get_progress(), None, None, None)
+                        self.__is_inventory_open, is_mining, self.__miner.get_progress(), self.__crafter.get_queue(), self.__crafter.get_crafting_progress())
 
         self.__player_hand.draw(
-            mouse_x, mouse_y)
+            mouse_x, mouse_y, self.__is_inventory_open)
 
     def update(self, keys, mouse_buttons, mouse_x, mouse_y, events):
         mouse_x_grid, mouse_y_grid = self.__grid.screen_to_grid(
