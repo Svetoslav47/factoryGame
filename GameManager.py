@@ -69,6 +69,7 @@ class GameManager:
 
     def update(self, keys, mouse_buttons, mouse_x, mouse_y, events):
         self.player.update(keys, mouse_buttons, mouse_x, mouse_y, events)
+        self.grid.update_buildings()
 
     def draw(self, mouse_buttons, mouse_x, mouse_y):
         self.screen.fill((0, 0, 0))

@@ -33,7 +33,7 @@ class Player:
             screen, self, self.__inventory, self.__hotbar, RecepiesArray)
 
         self.__player_hand = PlayerHand(
-            screen, self.__grid, self, self.__hotbar, self.__hud)
+            screen, self.__grid, self.__clock, self, self.__hotbar, self.__hud)
 
         self.__hotbar.set_slot(0, IronOre(screen=self.__screen))  # temp
 

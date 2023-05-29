@@ -33,5 +33,10 @@ class Tile:
     def is_solid(self):
         return True
 
+    def get_result_id(self):
+        if self.__item == None:
+            return None
+        return self.__item.item_id
+
     def get_hardness(self):
         return self.__hardness

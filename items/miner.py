@@ -1,5 +1,5 @@
 from items.BuildableItem import BuildableItem
-from buildings.miner import Miner as MinerBuilding
+from buildings.Miner import Miner as MinerBuilding
 
 import pygame
 STACK = 64

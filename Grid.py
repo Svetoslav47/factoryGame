@@ -119,6 +119,10 @@ class Grid:
 
         return True
 
+    def update_buildings(self):
+        for building in self.__buildings:
+            building.update()
+
     def deconstruct_building(self, x_grid, y_grid, width, height, building):
         for i in range(width):
             for j in range(height):
@@ -172,6 +176,13 @@ class Grid:
                 return self.__tiles_grid[x][y]
         return self.__tiles_grid[x][y]
 
+    def get_section(self, x, y, width, height):
+        grid_section = self.__tiles_grid[x:x + width]
+        for i in range(len(grid_section)):
+            grid_section[i] = grid_section[i][y:y + height]
+
+        return grid_section
+
     def get_tile_coordinates(self, tile):
         for x in range(self.__width):
             for y in range(self.__height):
@@ -183,7 +194,7 @@ class Grid:
         if is_player:
             return self.__tiles_grid[x][y] != None or self.__buildings_grid[x][y] != None
 
-        return self.__tiles_grid[x][y] != None and self.__tiles_grid[x][y].is_minable()
+        return self.__tiles_grid[x][y] != None
 
     def set_tile(self, x, y, value):
         self.__tiles_grid[x][y] = value

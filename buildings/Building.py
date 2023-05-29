@@ -1,8 +1,9 @@
 import pygame
+from systems.Inventory import Inventory
 
 
 class Building():
-    def __init__(self, screen, grid, x_grid, y_grid, width, height, building_id, item, hardness=1):
+    def __init__(self, screen, grid, clock, x_grid, y_grid, width, height, building_id, item, inventory_size, hardness=1):
         self._screen = screen
         self._grid = grid
         self._x_grid = x_grid
@@ -12,6 +13,7 @@ class Building():
         self._id = building_id
         self._item = item
         self.__hardness = hardness
+        self._inventory = Inventory(screen, inventory_size)
 
     def draw(self, player, mouse_hover, pieces):
         for i in range(self._height):
@@ -29,6 +31,11 @@ class Building():
 
     def mine(self, inventory):
         inventory.add_item(self._item(self._screen, 1))
+        for i in range(self._inventory.get_size()):
+            item = self._inventory.get_slot(i)
+            if item != None:
+                inventory.add_item(item)
+
         self._grid.deconstruct_building(
             self._x_grid, self._y_grid, self._width, self._height, self)
 
@@ -49,6 +56,9 @@ class Building():
 
     def get_height(self):
         return self._height
+
+    def update(self):
+        print("building doesn't have update method")
 
     @staticmethod
     def draw_build_preview(screen, grid, player, mouse_x, mouse_y, pieces, width, height):

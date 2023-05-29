@@ -130,12 +130,12 @@ class PlayerHud:
             return None, None
 
     def draw(self, mouse_x, mouse_y, is_window_open, is_mining, mining_progress, crafting_queue, crafting_progress):
+        self.__draw_hotbar()
         if is_window_open:
             self.__draw_window()
             self.__draw_inventory()
             self.__draw_crafting_recepies(mouse_x, mouse_y)
 
-        self.__draw_hotbar()
         if is_mining:
             self.__draw_mining_progress_bar(mining_progress)
 

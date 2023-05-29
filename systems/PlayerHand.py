@@ -2,9 +2,10 @@ from items.Item import Item
 
 
 class PlayerHand():
-    def __init__(self, screen, grid, player, player_hotbar, hud, box_size=50):
+    def __init__(self, screen, grid, clock, player, player_hotbar, hud, box_size=50):
         self.__screen = screen
         self.__grid = grid
+        self.__clock = clock
         self.__player = player
         self.__item = None
         self.__box_size = box_size
@@ -49,7 +50,7 @@ class PlayerHand():
         if not self.__item.is_buildable():
             return
 
-        if self.__item.build(self.__grid, self.__player, mouse_x, mouse_y):
+        if self.__item.build(self.__grid, self.__clock, self.__player, mouse_x, mouse_y):
             self.__item.set_amount(self.__item.get_amount() - 1)
             if self.__item.get_amount() <= 0:
                 self.__item = None
