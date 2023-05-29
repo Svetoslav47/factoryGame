@@ -1,9 +1,9 @@
-from GameManager import GameManager
+from menu.MainMenu import MainMenu
 
 
 def main():
-    game_manager = GameManager()
-    game_manager.mainloop()
+    main_menu = MainMenu()
+    main_menu.mainloop()
 
 
 if __name__ == "__main__":

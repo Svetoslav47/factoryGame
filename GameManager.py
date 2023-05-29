@@ -1,17 +1,15 @@
 import pygame
 from sys import exit
 
-from Grid import Grid
+from systems.Grid import Grid
 from Player import Player
 
 from items.Miner import Miner
-from items.CopperIngot import CopperIngot
+from items.Crafter import Crafter
 
 
 class GameManager:
-    __instance = None
-
-    def __init__(self, FPS=100, tile_size=50, grid_width=20, grid_height=20):
+    def __init__(self, grid_width=20, grid_height=20, seed="12345678", screen_width="800", screen_height="600", FPS=100, tile_size=50):
         self.FPS = FPS
         self.grid_tile_size = tile_size
         self.grid_width = grid_width
@@ -19,10 +17,10 @@ class GameManager:
         self.clock = pygame.time.Clock()
         pygame.init()
         pygame.display.set_caption("Factory Game")
-        self.screen = pygame.display.set_mode((800, 600))
+        self.screen = pygame.display.set_mode((screen_width, screen_height))
 
         self.grid = Grid(self.screen, tile_size=50,
-                         width=grid_width, height=grid_height)
+                         width=grid_width, height=grid_height, seed=seed)
 
         self.player = Player(screen=self.screen,
                              grid=self.grid,
@@ -31,15 +29,6 @@ class GameManager:
                              y=self.grid.get_height() // 2 * self.grid.get_tile_size(),
                              size=10,
                              speed=200)
-
-        if GameManager.__instance is None:
-            GameManager.__instance = self
-
-    @staticmethod
-    def get_instance():
-        if GameManager.__instance is None:
-            GameManager()
-        return GameManager.__instance
 
     def mainloop(self):
         while True:
@@ -50,11 +39,13 @@ class GameManager:
                     pygame.quit()
                     exit()
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        exit()
                     if event.key == pygame.K_u:
                         self.player.add_item_to_inventory(Miner(self.screen))
                     if event.key == pygame.K_i:
-                        self.player.add_item_to_inventory(
-                            CopperIngot(self.screen))
+                        self.player.add_item_to_inventory(Crafter(self.screen))
 
             keys = pygame.key.get_pressed()
 

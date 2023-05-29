@@ -3,6 +3,7 @@ from recepies.IronPlate import IronPlate
 from recepies.CopperIngot import CopperIngot
 from recepies.CopperPlate import CopperPlate
 from recepies.Miner import Miner
+from recepies.Crafter import Crafter
 
 
 RecepiesArray = [
@@ -10,5 +11,6 @@ RecepiesArray = [
     IronPlate,
     CopperIngot,
     CopperPlate,
-    Miner
+    Miner,
+    Crafter
 ]

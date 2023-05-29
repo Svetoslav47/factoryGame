@@ -15,7 +15,7 @@ ores = {
 
 
 class Grid:
-    def __init__(self, screen, tile_size, width=200, height=200):
+    def __init__(self, screen, tile_size, width=200, height=200, seed="12345"):
         self.__screen = screen
         self.__width = width
         self.__height = height
@@ -25,8 +25,8 @@ class Grid:
         self.__buildings_grid = [[None for x in range(self.__width)]
                                  for y in range(self.__height)]
         self.__buildings = []
-        self.__generate_ore(12345, "iron_ore", size=5)
-        self.__generate_ore(67890, "copper_ore", size=5)
+        self.__generate_ore(seed + "iron_ore", "iron_ore", size=5)
+        self.__generate_ore(seed + "copper_ore", "copper_ore", size=5)
 
     def __generate_ore(self, seed, ore_type, size=20):
         random.seed(seed)

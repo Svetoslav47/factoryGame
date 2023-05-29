@@ -4,7 +4,7 @@ from buildings.Building import Building
 
 from systems.Miner import Miner as MinerSystem
 
-image = pygame.image.load("assets/buildings/miner.png")
+image = pygame.image.load("assets/buildings/Miner.png")
 width = 3
 height = 3
 piece_width = image.get_width() // width
