@@ -98,6 +98,8 @@ class Player:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e:
                     self.toggle_inventory()
+                if event.key == pygame.K_r:
+                    self.__player_hand.rotate()
 
         if left_mouse_button_down_event:
             self.__player_hand.left_click(

@@ -27,8 +27,8 @@ class Miner(Building):
     piece_height = piece_height
     pieces = pieces
 
-    def __init__(self, screen, grid, clock, x_grid, y_grid, item):
-        super().__init__(screen, grid, clock, x_grid, y_grid,
+    def __init__(self, screen, grid, clock, x_grid, y_grid, rotation, item):
+        super().__init__(screen, grid, clock, x_grid, y_grid, rotation,
                          width, height, "miner", item, inventory_size)
         self._miner = MinerSystem(
             grid, mining_speed, self._inventory, clock)
@@ -37,9 +37,9 @@ class Miner(Building):
         super().draw(player, mouse_hover, pieces)
 
     @staticmethod
-    def draw_build_preview(screen, grid, player, mouse_x, mouse_y):
+    def draw_build_preview(screen, grid, player, mouse_x, mouse_y, rotation):
         Building.draw_build_preview(screen, grid, player, mouse_x,
-                                    mouse_y, pieces, width, height)
+                                    mouse_y, rotation, pieces, width, height)
 
     def update(self):
         grid_section = self._grid.get_section(
@@ -68,4 +68,3 @@ class Miner(Building):
                     self._miner.update(*mining_tile)
                     return
         print("miner is full")
-        # grid_section[i][j].update()

@@ -7,12 +7,12 @@ class BuildableItem(Item):
         self.__building = building
         super().__init__(screen, item_id, amount, stack_size)
 
-    def draw_build_preview(self, grid, player, mouse_x, mouse_y):
+    def draw_build_preview(self, grid, player, mouse_x, mouse_y, rotation):
         if self.__building is not None:
             self.__building.draw_build_preview(self._screen,
-                                               grid, player, mouse_x, mouse_y)
+                                               grid, player, mouse_x, mouse_y, rotation)
 
-    def build(self, grid, clock, player, mouse_x, mouse_y):
+    def build(self, grid, clock, player, mouse_x, mouse_y, rotation):
         mouse_x_grid, mouse_y_grid = grid.screen_to_grid(
             mouse_x, mouse_y, player)
 
@@ -29,7 +29,7 @@ class BuildableItem(Item):
             mouse_y_grid = grid.get_height() - self.__building.height
 
         if self.__building is not None:
-            return grid.build(mouse_x_grid, mouse_y_grid, self.__building(self._screen, grid, clock, mouse_x_grid, mouse_y_grid, self.__class__), self.__building.width, self.__building.width)
+            return grid.build(mouse_x_grid, mouse_y_grid, self.__building(self._screen, grid, clock, mouse_x_grid, mouse_y_grid, rotation, self.__class__), self.__building.width, self.__building.width)
 
     def is_buildable(self):
         return True

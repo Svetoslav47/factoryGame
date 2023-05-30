@@ -6,3 +6,4 @@ from items.IronOre import IronOre
 from items.IronPlate import IronPlate
 from items.Miner import Miner
 from items.Crafter import Crafter
+from items.Grabber import Grabber

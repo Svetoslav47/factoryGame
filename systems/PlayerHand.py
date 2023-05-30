@@ -11,6 +11,7 @@ class PlayerHand():
         self.__box_size = box_size
         self.__player_hotbar = player_hotbar
         self.__hud = hud
+        self._rotation = 0
 
     def draw(self, mouse_x, mouse_y, is_inventory_open):
         if self.__item is not None:
@@ -22,7 +23,7 @@ class PlayerHand():
                 self.__item.drawInInventory(mouse_x, mouse_y, self.__box_size)
             else:
                 self.__item.draw_build_preview(
-                    self.__grid, self.__player, mouse_x, mouse_y)
+                    self.__grid, self.__player, mouse_x, mouse_y, self._rotation)
 
     def left_click(self, mouse_x, mouse_y, is_inventory_open):
 
@@ -50,10 +51,15 @@ class PlayerHand():
         if not self.__item.is_buildable():
             return
 
-        if self.__item.build(self.__grid, self.__clock, self.__player, mouse_x, mouse_y):
+        if self.__item.build(self.__grid, self.__clock, self.__player, mouse_x, mouse_y, self._rotation):
             self.__item.set_amount(self.__item.get_amount() - 1)
             if self.__item.get_amount() <= 0:
                 self.__item = None
+
+    def rotate(self):
+        self._rotation += 1
+        if self._rotation > 3:
+            self._rotation = 0
 
     def _grab(self, inventory, index):
         if self.__item is None:

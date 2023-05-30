@@ -1,13 +1,17 @@
 import pygame
 from systems.Inventory import Inventory
 
+import numpy as np
+
 
 class Building():
-    def __init__(self, screen, grid, clock, x_grid, y_grid, width, height, building_id, item, inventory_size, hardness=1):
+    def __init__(self, screen, grid, clock, x_grid, y_grid, rotation, width, height, building_id, item, inventory_size, hardness=1):
         self._screen = screen
         self._grid = grid
+        self._clock = clock
         self._x_grid = x_grid
         self._y_grid = y_grid
+        self._rotation = rotation
         self._width = width
         self._height = height
         self._id = building_id
@@ -16,12 +20,21 @@ class Building():
         self._inventory = Inventory(screen, inventory_size)
 
     def draw(self, player, mouse_hover, pieces):
+        pieces = np.array(pieces)
+        pieces = pieces.reshape(self._height, self._width)
+        pieces = np.rot90(pieces, self._rotation)
+        pieces = pieces.flatten()
+
         for i in range(self._height):
             for j in range(self._width):
+                piece = pieces[i * self._width + j]
+                piece = pygame.transform.rotate(piece, self._rotation * 90)
+
                 draw_x, draw_y = self._grid.grid_to_screen(
                     self._x_grid + j, self._y_grid + i, player)
                 self._screen.blit(pygame.transform.scale(
-                    pieces[i * self._width + j], (self._grid.get_tile_size(), self._grid.get_tile_size())), (draw_x, draw_y))
+                    piece, (self._grid.get_tile_size(), self._grid.get_tile_size())), (draw_x, draw_y))
+
         if mouse_hover:
             border_width = 2
             draw_x, draw_y = self._grid.grid_to_screen(
@@ -61,7 +74,7 @@ class Building():
         print("building doesn't have update method")
 
     @staticmethod
-    def draw_build_preview(screen, grid, player, mouse_x, mouse_y, pieces, width, height):
+    def draw_build_preview(screen, grid, player, mouse_x, mouse_y, rotation, pieces, width, height):
         mouse_x_grid, mouse_y_grid = grid.screen_to_grid(
             mouse_x, mouse_y, player)
 
@@ -77,10 +90,18 @@ class Building():
         if mouse_y_grid + height > grid.get_height():
             mouse_y_grid = grid.get_height() - height
 
+        pieces = np.array(pieces)
+        pieces = np.reshape(pieces, (height, width))
+        pieces = np.rot90(pieces, rotation)
+        pieces = pieces.flatten()
+
         for i in range(height):
             for j in range(width):
                 draw_x, draw_y = grid.grid_to_screen(
                     mouse_x_grid + j, mouse_y_grid + i, player)
 
+                piece = pieces[i * width + j]
+                piece = pygame.transform.rotate(piece, rotation * 90)
+
                 screen.blit(pygame.transform.scale(
-                    pieces[i * width + j], (grid.get_tile_size(), grid.get_tile_size())), (draw_x, draw_y))
+                    piece, (grid.get_tile_size(), grid.get_tile_size())), (draw_x, draw_y))
