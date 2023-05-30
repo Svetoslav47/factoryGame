@@ -199,6 +199,9 @@ class Grid:
     def set_tile(self, x, y, value):
         self.__tiles_grid[x][y] = value
 
+    def get_tile_building(self, x, y):
+        return self.__buildings_grid[x][y]
+
     def get_tile_size(self):
         return self.__tile_size
 

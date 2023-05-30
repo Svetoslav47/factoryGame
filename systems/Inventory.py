@@ -57,6 +57,8 @@ class Inventory:
         return False
 
     def get_slot(self, index):
+        if index < 0 or index >= self._inventory_size or index is None:
+            return None
         return self._inventory[index]
 
     def pop_slot(self, index):

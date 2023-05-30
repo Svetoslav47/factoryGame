@@ -27,16 +27,13 @@ class PlayerHand():
 
     def left_click(self, mouse_x, mouse_y, is_inventory_open):
 
-        if self.__hud.is_mouse_in_player_inventory(
-                mouse_x, mouse_y) and is_inventory_open:
-            if self.__hud.is_mouse_in_player_recipies(mouse_x, mouse_y):
+        if self.__hud.is_mouse_in_inventory_window(mouse_x, mouse_y) and is_inventory_open:
+            if not self.__hud.is_mouse_in_player_recipies(mouse_x, mouse_y):
+                inventory, index = self.__hud.get_box_from_screen(
+                    mouse_x, mouse_y)
+
+                self._grab(inventory, index)
                 return
-
-            inventory, index = self.__hud.get_box_from_screen(
-                mouse_x, mouse_y)
-
-            self._grab(inventory, index)
-            return
 
         if self.__hud.is_mouse_in_player_recipies(mouse_x, mouse_y) and is_inventory_open:
             recepie = self.__hud.get_recepie_from_screen(mouse_x, mouse_y)
@@ -46,6 +43,11 @@ class PlayerHand():
             return
 
         if self.__item is None:
+            x_grid, y_grid = self.__grid.screen_to_grid(
+                mouse_x, mouse_y, self.__player)
+            building = self.__grid.get_tile_building(x_grid, y_grid)
+            if building is not None:
+                self.__player.open_building(building)
             return
 
         if not self.__item.is_buildable():

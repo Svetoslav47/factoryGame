@@ -5,6 +5,7 @@ from recepies.CopperPlate import CopperPlate
 from recepies.Miner import Miner
 from recepies.Crafter import Crafter
 from recepies.Grabber import Grabber
+from recepies.Chest import Chest
 
 
 RecepiesArray = [
@@ -14,5 +15,6 @@ RecepiesArray = [
     CopperPlate,
     Miner,
     Crafter,
-    Grabber
+    Grabber,
+    Chest
 ]

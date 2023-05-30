@@ -25,6 +25,8 @@ class Player:
         self.__speed = speed
         self.__inventory = Inventory(screen)
         self.__is_inventory_open = False
+        self.__opened_building = None
+
         self.__miner = Miner(grid, 1, self.__inventory, clock, is_player=True)
         self.__crafter = PlayerCrafter(screen, clock, self.__inventory)
         self.__hotbar = PlayerHotbar(screen, self, self.__inventory)
@@ -69,7 +71,7 @@ class Player:
                          (draw_x, draw_y, self.__size, self.__size))
 
         self.__hud.draw(mouse_x, mouse_y,
-                        self.__is_inventory_open, is_mining, self.__miner.get_progress(), self.__crafter.get_queue(), self.__crafter.get_crafting_progress())
+                        self.__is_inventory_open, self.__opened_building, is_mining, self.__miner.get_progress(), self.__crafter.get_queue(), self.__crafter.get_crafting_progress())
 
         self.__player_hand.draw(
             mouse_x, mouse_y, self.__is_inventory_open)
@@ -123,11 +125,16 @@ class Player:
         self.__y = min(max(self.__y, 0), self.__grid.get_height()
                        * self.__grid.get_tile_size())
 
+    def open_building(self, building):
+        self.__is_inventory_open = True
+        self.__opened_building = building
+
     def craft(self, recepie):
         self.__crafter.craft(recepie)
 
     def toggle_inventory(self):
         self.__is_inventory_open = not self.__is_inventory_open
+        self.__opened_building = None
 
     def add_item_to_inventory(self, item):
         self.__inventory.add_item(item)

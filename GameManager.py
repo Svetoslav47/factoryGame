@@ -5,7 +5,7 @@ from systems.Grid import Grid
 from Player import Player
 
 from items.Miner import Miner
-from items.Crafter import Crafter
+from items.Chest import Chest
 
 
 class GameManager:
@@ -39,13 +39,13 @@ class GameManager:
                     pygame.quit()
                     exit()
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        pygame.quit()
-                        exit()
+                    # if event.key == pygame.K_ESCAPE:
+                    #     pygame.quit()
+                    #     exit()
                     if event.key == pygame.K_u:
                         self.player.add_item_to_inventory(Miner(self.screen))
                     if event.key == pygame.K_i:
-                        self.player.add_item_to_inventory(Crafter(self.screen))
+                        self.player.add_item_to_inventory(Chest(self.screen))
 
             keys = pygame.key.get_pressed()
 

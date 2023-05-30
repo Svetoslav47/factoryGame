@@ -17,7 +17,6 @@ class PlayerHud:
         self.__inventory_columns = math.floor(self._inventory.get_size()**0.5)
         inventory_box_width = self.__inventory_screen_size_x / \
             (self.__inventory_columns*1.1)
-        # acount for the rightmost padding
 
         self.__inventory_rows = math.ceil(
             self._inventory.get_size() / self.__inventory_columns)
@@ -30,6 +29,8 @@ class PlayerHud:
             (self.__inventory_columns + 1)
         self.__inventory_box_padding_y = (self.__inventory_screen_size_y - (self.__inventory_box_size * self.__inventory_rows)) / \
             (self.__inventory_rows + 1)
+
+        self._building_open = False
 
         # hotbar things
         self.__hotbar_screen_size_x = self.__window_screen_size_x / 4 * 3
@@ -79,12 +80,19 @@ class PlayerHud:
     def is_mouse_in_inventory_window(self, mouse_x, mouse_y):
         return (self._screen.get_width() / 2 - self.__window_screen_size_x / 2 <= mouse_x <= self._screen.get_width() / 2 + self.__window_screen_size_x / 2) and (self._screen.get_height() / 2 - self.__window_screen_size_y / 2 <= mouse_y <= self._screen.get_height() / 2 + self.__window_screen_size_y / 2)
 
-    def is_mouse_in_player_inventory(self, mouse_x, mouse_y):
+    def _is_mouse_in_player_inventory(self, mouse_x, mouse_y):
         return (self._screen.get_width() / 2 - self.__window_screen_size_x / 2 <= mouse_x <= self._screen.get_width() / 2 - self.__window_screen_size_x / 2 + self.__inventory_screen_size_x) and (self._screen.get_height() / 2 - self.__window_screen_size_y / 2 <= mouse_y <= self._screen.get_height() / 2 - self.__window_screen_size_y / 2 + self.__inventory_screen_size_y)
 
+    def _is_mouse_in_building_inventory(self, mouse_x, mouse_y):
+        if self._building_open is None:
+            return False
+
+        return (self._screen.get_width() / 2 + self.__window_screen_size_x / 2 - self.__recepie_screen_size_x <= mouse_x <= self._screen.get_width() / 2 + self.__window_screen_size_x / 2) and (self._screen.get_height() / 2 - self.__window_screen_size_y / 2 <= mouse_y <= self._screen.get_height() / 2 - self.__window_screen_size_y / 2 + self.__recepie_screen_size_y)
+
     def is_mouse_in_player_recipies(self, mouse_x, mouse_y):
-        # if machine is not open
-        # the recipies are in the right side of the inventory window
+        if self._building_open is not None:
+            return False
+
         return (self._screen.get_width() / 2 + self.__window_screen_size_x / 2 - self.__recepie_screen_size_x <= mouse_x <= self._screen.get_width() / 2 + self.__window_screen_size_x / 2) and (self._screen.get_height() / 2 - self.__window_screen_size_y / 2 <= mouse_y <= self._screen.get_height() / 2 - self.__window_screen_size_y / 2 + self.__recepie_screen_size_y)
 
     def is_mouse_in_hotbar(self, mouse_x, mouse_y):
@@ -120,21 +128,39 @@ class PlayerHud:
         return self.__recepies[recepie_index]
 
     def get_box_from_screen(self, mouse_x, mouse_y):
-        if self.is_mouse_in_player_inventory(mouse_x, mouse_y):
+        if self._is_mouse_in_player_inventory(mouse_x, mouse_y):
             x = math.floor((mouse_x - (self._screen.get_width() / 2 - self.__window_screen_size_x / 2 +
                            self.__inventory_box_padding_x)) / (self.__inventory_box_size + self.__inventory_box_padding_x))
             y = math.floor((mouse_y - (self._screen.get_height() / 2 - self.__window_screen_size_y / 2 +
                            self.__inventory_box_padding_y)) / (self.__inventory_box_size + self.__inventory_box_padding_y))
             return self._inventory, x + y * self.__inventory_columns
+        elif self._building_open is not None and self._is_mouse_in_building_inventory(mouse_x, mouse_y):
+            # self, mouse_x, mouse_y, draw_x, draw_y, draw_zone_width, draw_zone_height
+            return self._building_open.get_box_from_inventory(mouse_x, mouse_y, self._screen.get_width() / 2 + self.__window_screen_size_x / 2 - self.__recepie_screen_size_x,
+                                                              self._screen.get_height() / 2 - self.__window_screen_size_y /
+                                                              2, self.__recepie_screen_size_x - self.__recepie_box_padding_x,
+                                                              self.__recepie_screen_size_y - self.__recepie_box_padding_y)
         else:
             return None, None
 
-    def draw(self, mouse_x, mouse_y, is_window_open, is_mining, mining_progress, crafting_queue, crafting_progress):
+    def draw(self, mouse_x, mouse_y, is_window_open, building_open, is_mining, mining_progress, crafting_queue, crafting_progress):
         self.__draw_hotbar()
+        self._building_open = building_open
         if is_window_open:
             self.__draw_window()
             self.__draw_inventory()
-            self.__draw_crafting_recepies(mouse_x, mouse_y)
+            if building_open is not None:
+                draw_x = self._screen.get_width() // 2 - self.__window_screen_size_x // 2 + \
+                    self.__inventory_screen_size_x
+                draw_y = self._screen.get_height() // 2 - self.__window_screen_size_y // 2
+
+                draw_zone_width = self.__window_screen_size_x - self.__inventory_screen_size_x
+                draw_zone_height = self.__window_screen_size_y
+
+                building_open.draw_inventory(
+                    self._screen, draw_x, draw_y, draw_zone_width, draw_zone_height)
+            else:
+                self.__draw_crafting_recepies(mouse_x, mouse_y)
 
         if is_mining:
             self.__draw_mining_progress_bar(mining_progress)

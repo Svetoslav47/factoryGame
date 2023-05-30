@@ -73,6 +73,25 @@ class Building():
     def update(self):
         print("building doesn't have update method")
 
+    def draw_inventory(self, screen, draw_x, draw_y, draw_zone_width, draw_zone_height):
+        # draw "this building doesnt have an openable inventory" text
+        font = pygame.font.SysFont("Arial", 20)
+        text = font.render(
+            "This building doesn't have an openable inventory", True, (0, 0, 0))
+        # rotate the text to go from top left to bottom right
+        text = pygame.transform.rotate(text, 45)
+
+        text_rect = text.get_rect()
+        text_rect.center = (draw_x + draw_zone_width // 2,
+                            draw_y + draw_zone_height // 2)
+        screen.blit(text, text_rect)
+
+    def get_box_from_inventory(self, mouse_x, mouse_y, draw_x, draw_y, draw_zone_width, draw_zone_height):
+        return self._inventory, None
+
+    def get_inventory(self):
+        return self._inventory
+
     @staticmethod
     def draw_build_preview(screen, grid, player, mouse_x, mouse_y, rotation, pieces, width, height):
         mouse_x_grid, mouse_y_grid = grid.screen_to_grid(
