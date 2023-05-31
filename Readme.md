@@ -65,7 +65,3 @@ This project is licensed under the [MIT License](https://opensource.org/licenses
 ## Acknowledgements
 
 This game is inspired by the popular game Factorio, developed by Wube Software. I would like to acknowledge their contribution and the inspiration they provided for this project.
-
-## Contact
-
-If you have any questions, suggestions, or feedback, please feel free to contact the project maintainer at [email protected]
