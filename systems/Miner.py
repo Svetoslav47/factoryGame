@@ -10,7 +10,7 @@ class Miner:
         self.__grid = grid
         self.__mining_tile = None
         self.__mining_progress = 0
-        self.__mining_speed = 1
+        self.__mining_speed = miningSpeed
         self.__mining_hardness = 0
         self.__inventory = inventory
         self.__is_mining = False

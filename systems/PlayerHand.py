@@ -64,6 +64,8 @@ class PlayerHand():
             self._rotation = 0
 
     def _grab(self, inventory, index):
+        if index is None:
+            return
         if self.__item is None:
             self.__item = inventory.pop_slot(index)
             return True

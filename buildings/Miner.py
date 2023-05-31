@@ -16,7 +16,7 @@ for i in range(height):
             (j * piece_width, i * piece_height, piece_width, piece_height)))
 
 inventory_size = 1
-mining_speed = 1
+mining_speed = 0.5
 
 
 class Miner(Building):

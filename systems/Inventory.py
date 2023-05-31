@@ -52,6 +52,8 @@ class Inventory:
                 else:
                     amount -= self._inventory[x].get_amount()
                     self._inventory[x] = None
+                    if amount == 0:
+                        return True
                     return self.remove_item(item_id, amount)
 
         return False
@@ -60,6 +62,13 @@ class Inventory:
         if index < 0 or index >= self._inventory_size or index is None:
             return None
         return self._inventory[index]
+
+    def get_slot_with_item(self):
+        for x in range(self._inventory_size):
+            if self._inventory[x] != None:
+                return x
+
+        return None
 
     def pop_slot(self, index):
         item = self._inventory[index]
