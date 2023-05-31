@@ -6,8 +6,8 @@ class Recepie:
         for ingredient in ingredients:
             if inventory.amount_of_item(ingredient[0].item_id) < ingredient[1]:
                 # print(ingredient[0])
-                print("Not enough " +
-                      ingredient[0].item_id + " to craft")
+                # print("Not enough " +
+                #       ingredient[0].item_id + " to craft")
                 return False
         return True
 

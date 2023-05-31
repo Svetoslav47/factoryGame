@@ -87,6 +87,24 @@ class Inventory:
     def get_size(self):
         return self._inventory_size
 
+    def has_space_for_item(self, item_id, stack_size, amount):
+        space_available = 0
+        for x in range(self._inventory_size):
+            if self._inventory[x] == None:
+                space_available += stack_size
+                if space_available >= stack_size:
+                    return True
+            if self._inventory[x].item_id == item_id:
+                space_available += stack_size - \
+                    self._inventory[x].get_amount()
+                if space_available >= amount:
+                    return True
+
+        if space_available >= amount:
+            return True
+
+        return False
+
     def set_slot(self, index, item):
         if self._inventory[index] == None:
             self._inventory[index] = item

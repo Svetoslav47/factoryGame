@@ -26,6 +26,7 @@ class Miner(Building):
     piece_width = piece_width
     piece_height = piece_height
     pieces = pieces
+    name = "Miner"
 
     def __init__(self, screen, grid, clock, x_grid, y_grid, rotation, item):
         super().__init__(screen, grid, clock, x_grid, y_grid, rotation,
@@ -35,6 +36,9 @@ class Miner(Building):
 
     def draw(self, player, mouse_hover):
         super().draw(player, mouse_hover, pieces)
+
+    def get_inventory(self):
+        return self._inventory, None
 
     @staticmethod
     def draw_build_preview(screen, grid, player, mouse_x, mouse_y, rotation):

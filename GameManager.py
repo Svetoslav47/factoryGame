@@ -6,6 +6,8 @@ from Player import Player
 
 from items.Miner import Miner
 from items.Chest import Chest
+from items.Crafter import Crafter
+from items.Grabber import Grabber
 
 
 class GameManager:
@@ -46,6 +48,10 @@ class GameManager:
                         self.player.add_item_to_inventory(Miner(self.screen))
                     if event.key == pygame.K_i:
                         self.player.add_item_to_inventory(Chest(self.screen))
+                    if event.key == pygame.K_o:
+                        self.player.add_item_to_inventory(Crafter(self.screen))
+                    if event.key == pygame.K_p:
+                        self.player.add_item_to_inventory(Grabber(self.screen))
 
             keys = pygame.key.get_pressed()
 

@@ -90,7 +90,7 @@ class Building():
         return self._inventory, None
 
     def get_inventory(self):
-        return self._inventory
+        return self._inventory, self._inventory
 
     @staticmethod
     def draw_build_preview(screen, grid, player, mouse_x, mouse_y, rotation, pieces, width, height):

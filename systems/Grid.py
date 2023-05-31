@@ -121,6 +121,9 @@ class Grid:
 
     def update_buildings(self):
         for building in self.__buildings:
+            if building.name == "Crafter":
+                from recepies.IronIngot import IronIngot as recepie
+                building.set_recepie(recepie)
             building.update()
 
     def deconstruct_building(self, x_grid, y_grid, width, height, building):

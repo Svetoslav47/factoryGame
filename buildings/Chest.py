@@ -25,6 +25,7 @@ class Chest(Building):
     piece_width = piece_width
     piece_height = piece_height
     pieces = pieces
+    name = "Chest"
 
     def __init__(self, screen, grid, clock, x_grid, y_grid, rotation, item):
         super().__init__(screen, grid, clock, x_grid, y_grid, rotation,

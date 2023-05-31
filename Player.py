@@ -2,7 +2,7 @@ import pygame
 
 from systems.Inventory import Inventory
 from systems.Miner import Miner
-from systems.PlayerCrafter import PlayerCrafter
+from systems.Crafter import Crafter
 from systems.PlayerHotbar import PlayerHotbar
 from systems.PlayerHand import PlayerHand
 from systems.PlayerHud import PlayerHud
@@ -28,7 +28,8 @@ class Player:
         self.__opened_building = None
 
         self.__miner = Miner(grid, 1, self.__inventory, clock, is_player=True)
-        self.__crafter = PlayerCrafter(screen, clock, self.__inventory)
+        self.__crafter = Crafter(
+            screen, clock, self.__inventory, self.__inventory)
         self.__hotbar = PlayerHotbar(screen, self, self.__inventory)
 
         self.__hud = PlayerHud(
